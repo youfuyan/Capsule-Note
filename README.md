@@ -39,7 +39,7 @@ Which (if any) progressive web app feature(s) does your app support?
 
 ## Mockup images
 
-**[Figma link](hhttps://discord.com/channels/1067153607746654208/1067153962576388126/1089950168285188136) along with a very brief caption:**
+**[Figma Prototype](https://discord.com/channels/1067153607746654208/1067153962576388126/1089950168285188136) along with a very brief caption:**
 
 ![](https://media.giphy.com/media/26ufnwz3wDUli7GU0/giphy.gif)
 
