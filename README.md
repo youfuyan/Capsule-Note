@@ -31,6 +31,7 @@ Note Capsule is a mobile-first, single-page note-taking application that allows 
 
 Which (if any) device integration(s) does your app support?
 
+- Iphone SE
 - ...
 
 Which (if any) progressive web app feature(s) does your app support?
@@ -41,7 +42,17 @@ Which (if any) progressive web app feature(s) does your app support?
 
 **[Figma Prototype](https://www.figma.com/file/DR1Oxyx95T2sGyJcsxmc0v/Project2-LoFi?node-id=0%3A1&t=oNErMmuOGw5AKvIc-1) along with a very brief caption:**
 
-![](https://media.giphy.com/media/26ufnwz3wDUli7GU0/giphy.gif)
+### Login Page
+
+![](Mockup/signon_login.png)
+
+### Dashboard Page
+
+![](/Mockup/dashboard.png)
+
+### Note Editor Page
+
+![](/Mockup/edit.png)
 
 ## Testing Notes
 
