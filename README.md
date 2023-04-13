@@ -6,7 +6,7 @@ CSCI 5117, Spring 2023, [assignment description](https://canvas.umn.edu/courses/
 
 - Team Name: Capsule
 - App Name: Note Capsule
-- App Link: <https://TODO.com/>
+- App Link: https://note-capsule.netlify.app/
 
 Note Capsule is a mobile-first, single-page note-taking application that allows users to quickly create, manage, and access their notes across different devices. It leverages the power of React for the front-end and serverless architecture using codehooks.io for back-end tasks like authentication and data storage.
 
