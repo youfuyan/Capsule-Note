@@ -1,5 +1,43 @@
-import '@/styles/globals.css'
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  RedirectToSignIn,
+} from "@clerk/nextjs";
+
+import "bootstrap/dist/css/bootstrap.css";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+
+const publicPages = ["/", "/signin", "/signup"];
 
 export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  useEffect(() => {
+    typeof document !== undefined
+      ? require("bootstrap/dist/js/bootstrap")
+      : null;
+  }, []);
+
+  const { pathname } = useRouter();
+
+
+  const isPublicPage = publicPages.includes(pathname);
+
+  return (
+    <ClerkProvider {...pageProps}>
+      {isPublicPage ? (
+        <Component {...pageProps} />
+      ) : (
+        <>
+          <SignedIn>
+            <Component {...pageProps} />
+          </SignedIn>
+
+          <SignedOut>
+            <RedirectToSignIn />
+          </SignedOut>
+        </>
+      )}
+    </ClerkProvider>
+  );
 }

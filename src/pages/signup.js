@@ -2,11 +2,13 @@ import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
+import { SignUp, SignedOut } from "@clerk/nextjs";
 import { Button } from 'react-bootstrap'
+// import Login from '../components/login';
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default function SignUpPage() {
 
   const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,31 +29,7 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main>
-
-          <div>
-            <h1>Welcome to Note Capsule!</h1>
-            <p>Note Capsule is a mobile-first, single-page <br></br>
-            note-taking application that allows you to <br></br>
-            quickly create, manage, and access your <br></br>
-            notes across different devices.
-            </p>
-          </div>
-
-          <div>
-            <Button href="/signin">Login</Button> <br></br>
-            <Button href="/signup">Sign up</Button>
-          </div>
-
-          <div>
-            <p>Collect your thoughts</p>
-            <br></br>
-            <br></br>
-            <p>Let's start the trip together</p>
-          </div>
-
-          <div>
-            <p>© 2023 Team Capsule</p>
-          </div>
+            <SignUp />
         </main>
       </>
     )
