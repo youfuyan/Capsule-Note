@@ -1,9 +1,8 @@
-import {app, Datastore} from 'codehooks-js'
-import {crudlify} from 'codehooks-crudlify'
+import { app, Datastore } from 'codehooks-js';
+import { crudlify } from 'codehooks-crudlify';
 // import { date, object, string, number, boolean} from 'yup';
 import jwtDecode from 'jwt-decode';
-import * as Yup from 'yup'
-
+import * as Yup from 'yup';
 
 // Define the schema for a Todo object using Yup
 const noteSchema = Yup.object().shape({
@@ -21,7 +20,7 @@ const categoriesSchema = Yup.object({
   userId: Yup.string().required(),
   name: Yup.string().required(),
   createdOn: Yup.date().default(() => new Date()),
-})
+});
 
 const options = {
   // Specify the schema type as "yup"
@@ -32,7 +31,7 @@ const userAuth = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
     if (authorization) {
-      const token = authorization.replace('Bearer ','');
+      const token = authorization.replace('Bearer ', '');
       // NOTE this doesn't validate, but we don't need it to. codehooks is doing that for us.
       const token_parsed = jwtDecode(token);
       req.user_token = token_parsed;
@@ -40,42 +39,40 @@ const userAuth = async (req, res, next) => {
     next();
   } catch (error) {
     next(error);
-  } 
-}
-app.use(userAuth)
+  }
+};
+app.use(userAuth);
 
 // lastest note is on the top
 async function getNotesDescSortedByDate(req, res) {
   const userId = req.user_token.sub;
   // const userId = req.params.userId;
   // const userId = "test1"; // for testing
-  const conn = await Datastore.open();  
-  const query = {"userId": userId};
+  const conn = await Datastore.open();
+  const query = { userId: userId };
   const options = {
     filter: query,
-    sort: {"createdOn" : 0}
-  }  
-  conn.find("note", options).json(res);  
+    sort: { createdOn: 0 },
+  };
+  conn.find('note', options).json(res);
 }
-
-
 
 // latest note is on the bottonm
 async function getNotesAescSortedByDate(req, res) {
   const userId = req.user_token.sub;
   // const userId = req.params.userId;
   // const userId = "test1"; // for testing
-  const conn = await Datastore.open();  
-  const query = {"userId": userId };
+  const conn = await Datastore.open();
+  const query = { userId: userId };
   const options = {
     filter: query,
-    sort: {"createdOn" : 1}
-  }  
-  conn.find("note", options).json(res);  
+    sort: { createdOn: 1 },
+  };
+  conn.find('note', options).json(res);
 }
 
-
-
+// Make REST API CRUD operations for the "notes" collection with the Yup schema
+crudlify(app, { note: noteSchema }, options);
 
 // search the note table by keyword
 // show results by date desc order
@@ -84,21 +81,21 @@ async function getSearchRes(req, res) {
   // const userId = "test1";
   const userId = req.user_token.sub;
   const searchKey = req.params.searchInput;
-  const conn = await Datastore.open();  
+  const conn = await Datastore.open();
   const query = {
-    userId: userId, 
+    userId: userId,
     $or: [
-      { "title": { $regex: searchKey, $options: "gi" } },
-      { "content": { $regex: searchKey, $options: "gi" } },
-      { "category": { $regex: searchKey, $options: "gi" } },
-      { "createdOn": { $regex: searchKey, $options: "gi" } }
-    ]
+      { title: { $regex: searchKey, $options: 'gi' } },
+      { content: { $regex: searchKey, $options: 'gi' } },
+      { category: { $regex: searchKey, $options: 'gi' } },
+      { createdOn: { $regex: searchKey, $options: 'gi' } },
+    ],
   };
   const options = {
-    sort: { "createdOn": -1 },
-    filter: query
-  }  
-  conn.find("note", options).json(res);  
+    sort: { createdOn: -1 },
+    filter: query,
+  };
+  conn.find('note', options).json(res);
 }
 
 app.get('/getAllNotesDesc', getNotesDescSortedByDate);
@@ -106,7 +103,6 @@ app.get('/getAllNotesDesc', getNotesDescSortedByDate);
 app.get('/getAllNotesAesc', getNotesAescSortedByDate);
 
 app.get('/getAllSearchNotes/:searchInput', getSearchRes);
-
 
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
 crudlify(app, { note: noteSchema, categories: categoriesSchema }, options);
