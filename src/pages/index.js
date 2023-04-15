@@ -4,18 +4,28 @@ import landingstyles from "@/styles/landingPage.module.css";
 import Image from "next/image";
 import { Button } from "react-bootstrap";
 // import BatchPredictionIcon from '@mui/icons-material/BatchPrediction'
-import { RedirectToSignIn, SignIn, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { RedirectToSignIn, SignIn, useUser, SignedIn, SignedOut } from "@clerk/nextjs";
 import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 // the landing page '/'
 export default function Home() {
+  const router = useRouter();
+  const { user, isSignedIn } = useUser();
   const iconstyle = {
     margin: "5px",
     fontSize: ".5rem",
     // color: 'rgb(70, 40, 131)',
   };
+
+  useEffect(() => {
+    if(isSignedIn){
+      router.push("/dashboard");
+    }
+    
+  }, [isSignedIn]);
 
   return (
     <>
@@ -34,9 +44,6 @@ export default function Home() {
         ></link>
       </Head>
       <main>
-        <SignedIn>
-          <RedirectToSignIn redirectUrl="/dashboard"></RedirectToSignIn>
-        </SignedIn>
         <SignedOut>
           <div>
             <div className={landingstyles.logo}>
