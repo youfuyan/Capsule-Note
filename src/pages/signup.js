@@ -1,15 +1,14 @@
-import Head from 'next/head'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-import { useEffect, useState } from 'react'
+import Head from "next/head";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Home.module.css";
+import { useEffect, useState } from "react";
 import { SignUp, SignedOut } from "@clerk/nextjs";
-import { Button } from 'react-bootstrap'
+import { Button } from "react-bootstrap";
 // import Login from '../components/login';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function SignUpPage() {
-
   const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -17,8 +16,8 @@ export default function SignUpPage() {
     setLoading(false);
   }, []);
 
-  if(loading) {
-    return (<span>loading...</span>);
+  if (loading) {
+    return <span>loading...</span>;
   } else {
     return (
       <>
@@ -29,9 +28,11 @@ export default function SignUpPage() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main>
-            <SignUp />
+          <SignedOut>
+            <SignIn />
+          </SignedOut>
         </main>
       </>
-    )
+    );
   }
 }
