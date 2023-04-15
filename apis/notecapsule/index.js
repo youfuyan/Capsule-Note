@@ -1,29 +1,28 @@
-import {app} from 'codehooks-js'
-import {crudlify} from 'codehooks-crudlify'
-import { date, object, string } from 'yup';
+// // Export app to a runtime server engine
+// export default app.init();
+import { app } from 'codehooks-js';
+import { crudlify } from 'codehooks-crudlify';
+import * as yup from 'yup';
 
-// example
-const flashCardYup = object({
-    front: string().required(),
-    back: string().required(),
-    category: string(),//.required(),
-    createdOn: date().default(() => new Date()),
-})
+// Define the schema for a Todo object using Yup
+const noteSchema = yup.object().shape({
+  userId: yup.string().required('User ID is required'), // User ID
+  title: yup.string().required('Todo title is required'), // note title
+  content: yup.string().required('Todo content is required'), // note content
+  category: yup.string().nullable(), // note category (optional)
+  createdOn: yup.mixed().default(() => new Date().toISOString()), // note creation date (default: current date)
+});
 
-// /dev
-app.get('/', (req, res) => {
-  res.json({result:'CRUD server ready'});
-})
+// Define the schema for a Category object using Yup
+// Todo: add category schema
 
-// /dev/test, test route for https://<PROJECTID>.api.codehooks.io/dev/
+const options = {
+  // Specify the schema type as "yup"
+  schema: 'yup',
+};
 
+// Make REST API CRUD operations for the "notes" collection with the Yup schema
+crudlify(app, { note: noteSchema }, options);
 
-// // Use Crudlify to create a REST API for any collection
-// crudlify(app)
-
-crudlify(app, {flashCard: flashCardYup})
-
-
-// bind to serverless runtime
+// Export app to a runtime server engine
 export default app.init();
-
