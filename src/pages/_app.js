@@ -3,24 +3,24 @@ import {
   SignedIn,
   SignedOut,
   RedirectToSignIn,
-} from "@clerk/nextjs";
+} from '@clerk/nextjs';
 
-import "bootstrap/dist/css/bootstrap.css";
-import "../styles/styles.css"
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import 'bootstrap/dist/css/bootstrap.css';
+import 'react-quill/dist/quill.snow.css';
+import '../styles/styles.css';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-const publicPages = ["/", "/signin", "/signup"];
+const publicPages = ['/', '/signin', '/signup'];
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {
     typeof document !== undefined
-      ? require("bootstrap/dist/js/bootstrap")
+      ? require('bootstrap/dist/js/bootstrap')
       : null;
   }, []);
 
   const { pathname } = useRouter();
-
 
   const isPublicPage = publicPages.includes(pathname);
 
