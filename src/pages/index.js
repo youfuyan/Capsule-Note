@@ -1,14 +1,17 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
 import landingstyles from "@/styles/landingPage.module.css";
 import Image from "next/image";
 import { Button } from "react-bootstrap";
 // import BatchPredictionIcon from '@mui/icons-material/BatchPrediction'
-import { RedirectToSignIn, SignIn, useUser, SignedIn, SignedOut } from "@clerk/nextjs";
-import { useRouter } from 'next/router';
+import {
+  RedirectToSignIn,
+  SignIn,
+  useUser,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
-const inter = Inter({ subsets: ["latin"] });
 
 // the landing page '/'
 export default function Home() {
@@ -21,10 +24,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if(isSignedIn){
+    if (isSignedIn) {
       router.push("/dashboard");
     }
-    
   }, [isSignedIn]);
 
   return (
@@ -45,26 +47,61 @@ export default function Home() {
       </Head>
       <main>
         <SignedOut>
-          <div>
-            <div className={landingstyles.logo}>
-              {/* <BatchPredictionIcon xs={iconstyle} /> */}
-              Note Capsule
+          <div className={`${landingstyles.landingContainer}`}>
+            <div>
+              <img
+                className={`${landingstyles.landingLogo}`}
+                src="/imgs/logo_transparent.png"
+              ></img>
+
+              <img
+                src="/imgs/landing.png"
+                alt="background"
+                className={landingstyles.image}
+              ></img>
             </div>
 
-            <Image
-              src="/landing.png"
-              alt="background"
-              width={375}
-              height={246}
-              className={landingstyles.image}
-            />
+            <div className={landingstyles.detailsContainer}>
+              
+              <h1 className={landingstyles.welcome}>Welcome to Note Capsule!</h1>
+              
 
-            <div className={landingstyles.welcome}>
-              <strong>Welcome to Note Capsule!</strong>
+              <p>
+                Note Capsule is a mobile-first, single-page <br></br>
+                note-taking application that allows you to <br></br>
+                quickly create, manage, and access <br></br>
+                your notes across different devices.
+              </p>
+
+              <Button
+                variant="light"
+                className={landingstyles.landingButton}
+                href="/signin"
+              >
+                Sign In
+              </Button>
+              <br></br>
+              <Button
+                variant="dark"
+                className={landingstyles.landingButton}
+                href="/signup"
+              >
+                Sign Up
+              </Button>
+
+              <div className={landingstyles.landingDetails}>
+                <p>Collect your thoughts.</p>
+                <br></br>
+                <p>Let's start the trip together!</p>
+              </div>
+              
             </div>
 
-            <Button href="/signin">Sign In</Button>
-            <Button href="/signup">Sign Up</Button>
+            <div >
+              <p className={landingstyles.landingFooter}>
+                © 2023 Team Capsule
+              </p>
+            </div>
           </div>
         </SignedOut>
       </main>

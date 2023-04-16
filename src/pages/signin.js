@@ -1,18 +1,24 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { SignIn, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
-// import Login from "../components/login";
-
-const inter = Inter({ subsets: ["latin"] });
+import { SignIn, SignUpButton, SignedIn, useUser, SignedOut } from "@clerk/nextjs";
+import { useRouter } from 'next/router';
 
 export default function SignInPage() {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const { user, isSignedIn } = useUser();
 
   useEffect(() => {
     setLoading(false);
   }, []);
+  
+  useEffect(() => {
+    if(isSignedIn){
+      router.push("/dashboard");
+    }
+    
+  }, [isSignedIn]);
 
   if (loading) {
     return <span>loading...</span>;

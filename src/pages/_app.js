@@ -6,6 +6,7 @@ import {
 } from "@clerk/nextjs";
 
 import "bootstrap/dist/css/bootstrap.css";
+import "../styles/styles.css"
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
