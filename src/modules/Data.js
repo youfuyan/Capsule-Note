@@ -305,3 +305,10 @@ export async function updateNote(
     throw error;
   }
 }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in updateNote function:', error);
+    throw error;
+  }
+}

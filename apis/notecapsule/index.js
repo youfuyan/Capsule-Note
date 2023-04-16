@@ -45,7 +45,7 @@ app.use(userAuth);
 
 // lastest note is on the top
 async function getNotesDescSortedByDate(req, res) {
-  const userId = req.user_token.sub;
+  // const userId = req.user_token.sub;
   // const userId = req.params.userId;
   // const userId = "test1"; // for testing
   const conn = await Datastore.open();
