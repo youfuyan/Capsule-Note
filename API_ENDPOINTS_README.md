@@ -6,4 +6,4 @@ For all endpoints, make sure in the frontend, you have the jwt token set up.
 2. It will return all notes by time descending order (latest on top)
 "https://notecapsule-kl0n.api.codehooks.io/dev/getAllNotesDesc"
 
-3. Get all notes by userId
+Refer to modules/Data.js for rest api endpoints.
