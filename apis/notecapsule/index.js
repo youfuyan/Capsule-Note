@@ -46,19 +46,18 @@ app.use(userAuth)
 
 // lastest note is on the top
 async function getNotesDescSortedByDate(req, res) {
-  // const userId = req.user_token.sub;
+  const userId = req.user_token.sub;
   // const userId = req.params.userId;
-  const userId = "test1"; // for testing
+  // const userId = "test1"; // for testing
   const conn = await Datastore.open();  
   const query = {"userId": userId};
   const options = {
     filter: query,
-    sort: {'createdOn' : 0},
+    sort: {"createdOn" : 0}
   }  
-  conn.getMany('note', options).json(res);  
+  conn.find("note", options).json(res);  
 }
 
-app.get('/getAllNotesDesc', getNotesDescSortedByDate);
 
 
 // latest note is on the bottonm
@@ -70,12 +69,43 @@ async function getNotesAescSortedByDate(req, res) {
   const query = {"userId": userId };
   const options = {
     filter: query,
-    sort: {'createdOn' : 1},
+    sort: {"createdOn" : 1}
   }  
-  conn.getMany('note', options).json(res);  
+  conn.find("note", options).json(res);  
 }
 
+
+
+
+// search the note table by keyword
+// show results by date desc order
+async function getSearchRes(req, res) {
+  // const userId = req.params.userId;
+  // const userId = "test1";
+  const userId = req.user_token.sub;
+  const searchKey = req.params.searchInput;
+  const conn = await Datastore.open();  
+  const query = {
+    userId: userId, 
+    $or: [
+      { "title": { $regex: searchKey, $options: "gi" } },
+      { "content": { $regex: searchKey, $options: "gi" } },
+      { "category": { $regex: searchKey, $options: "gi" } },
+      { "createdOn": { $regex: searchKey, $options: "gi" } }
+    ]
+  };
+  const options = {
+    sort: { "createdOn": -1 },
+    filter: query
+  }  
+  conn.find("note", options).json(res);  
+}
+
+app.get('/getAllNotesDesc', getNotesDescSortedByDate);
+
 app.get('/getAllNotesAesc', getNotesAescSortedByDate);
+
+app.get('/getAllSearchNotes/:searchInput', getSearchRes);
 
 
 // Make REST API CRUD operations for the "notes" collection with the Yup schema

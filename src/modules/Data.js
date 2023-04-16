@@ -19,6 +19,38 @@ export async function getNotes(authToken, userId) {
   return await result.json();
 }
 
+// get notes by asecding order, userId will be extracted from the token
+export async function getNotesAsce(authToken) {
+  // console.log(userId);
+
+  const result = await fetch(`${backend_base}/getAllNotesAesc`, {
+      'method':'GET',
+      headers: {
+        'x-api-key': API_KEY,
+        Authorization: `Bearer ${authToken}`,
+      },
+  });
+
+  console.log(JSON.stringify(result));
+  return await result.json();
+}
+
+// get notes by desecding order, userId will be extracted from the token
+export async function getNotesDesc(authToken) {
+  // console.log(userId);
+
+  const result = await fetch(`${backend_base}/getAllNotesDesc`, {
+      'method':'GET',
+      headers: {
+        'x-api-key': API_KEY,
+        Authorization: `Bearer ${authToken}`,
+      },
+  });
+
+  console.log(JSON.stringify(result));
+  return await result.json();
+}
+
 // get a specific note by note id
 // note id is unique
 export async function getNote(authToken, noteId) {
@@ -66,13 +98,40 @@ export async function getNotesByCat(authToken, userId, cat) {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Error fetching todos by category:', errorData);
-      throw new Error('Failed to fetch todos by category');
+      console.error('Error fetching notes by category:', errorData);
+      throw new Error('Failed to fetch notes by category');
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error in getTodoByCat function:', error);
+    console.error('Error in getNotesByCat function:', error);
+    throw error;
+  }
+
+}
+
+// get search results 
+// userId will be extracted from token
+export async function getSearchRes(authToken, searchInput) {
+  try {
+    const response = await fetch(`${backend_base}/getAllSearchNotes/${searchInput}`, 
+    {
+        method:'GET',
+        headers: {
+          'x-api-key': API_KEY,
+          Authorization: `Bearer ${authToken}`,
+        },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error fetching notes for search:', errorData);
+      throw new Error('Failed to fetch notes for search');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in getSearchRes function:', error);
     throw error;
   }
 
@@ -124,8 +183,8 @@ export async function addCat(authToken, cat) {
 
   if (!response.ok) {
     const errorData = await response.json();
-    console.error('Error adding new todo:', errorData);
-    throw new Error('Failed to adding new todo');
+    console.error('Error adding new category:', errorData);
+    throw new Error('Failed to adding new category');
   }
 
   return await response.json();
@@ -200,7 +259,7 @@ export async function updateNote(authToken, userId, id, newCategory, newTitle, n
   try {
     // Check if the 'id' parameter is defined
     if (!id) {
-      throw new Error('Todo ID is required for updating');
+      throw new Error('Note ID is required for updating');
     }
     const createdOn = new Date().toISOString(); // Get the current date and time
     const response = await fetch(`${backend_base}/note/${id}`, {
