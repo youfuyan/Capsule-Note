@@ -8,11 +8,11 @@ export async function getNotes(authToken, userId) {
   console.log(userId);
 
   const result = await fetch(`${backend_base}/note?userId=${userId}`, {
-      'method':'GET',
-      headers: {
-        'x-api-key': API_KEY,
-        Authorization: `Bearer ${authToken}`,
-      },
+    method: 'GET',
+    headers: {
+      'x-api-key': API_KEY,
+      Authorization: `Bearer ${authToken}`,
+    },
   });
 
   console.log(JSON.stringify(result));
@@ -24,11 +24,11 @@ export async function getNotesAsce(authToken) {
   // console.log(userId);
 
   const result = await fetch(`${backend_base}/getAllNotesAesc`, {
-      'method':'GET',
-      headers: {
-        'x-api-key': API_KEY,
-        Authorization: `Bearer ${authToken}`,
-      },
+    method: 'GET',
+    headers: {
+      'x-api-key': API_KEY,
+      Authorization: `Bearer ${authToken}`,
+    },
   });
 
   console.log(JSON.stringify(result));
@@ -40,11 +40,11 @@ export async function getNotesDesc(authToken) {
   // console.log(userId);
 
   const result = await fetch(`${backend_base}/getAllNotesDesc`, {
-      'method':'GET',
-      headers: {
-        'x-api-key': API_KEY,
-        Authorization: `Bearer ${authToken}`,
-      },
+    method: 'GET',
+    headers: {
+      'x-api-key': API_KEY,
+      Authorization: `Bearer ${authToken}`,
+    },
   });
 
   console.log(JSON.stringify(result));
@@ -55,46 +55,50 @@ export async function getNotesDesc(authToken) {
 // note id is unique
 export async function getNote(authToken, noteId) {
   const result = await fetch(`${backend_base}/note/${noteId}`, {
-      'method':'GET',
-      headers: {
-        'x-api-key': API_KEY,
-        Authorization: `Bearer ${authToken}`,
-      },
-  })
+    method: 'GET',
+    headers: {
+      'x-api-key': API_KEY,
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
   return await result.json();
 }
 
 // get categories of current user
 export async function getAllCats(authToken, userId) {
   const response = await fetch(`${backend_base}/categories?userId=${userId}`, {
-      method:'GET',
-      headers: {
-        'x-api-key': API_KEY,
-        Authorization: `Bearer ${authToken}`,
-      },
+    method: 'GET',
+    headers: {
+      'x-api-key': API_KEY,
+      Authorization: `Bearer ${authToken}`,
+    },
   });
 
   if (!response.ok) {
-    console.log("error fetching");
+    console.log('error fetching');
     const errorData = await response.json();
     console.error('Error fetching categories:', errorData);
     throw new Error('Failed to fetch categories');
   }
 
-  return await response.json();
+  const categoriesData = await response.json();
+  console.log('Categories data:', categoriesData); // Log categories data for debugging
+  return categoriesData;
 }
 
 // get notes by category
 export async function getNotesByCat(authToken, userId, cat) {
   try {
-    const response = await fetch(`${backend_base}/note?userId=${userId}&category=${cat}`, 
-    {
-        method:'GET',
+    const response = await fetch(
+      `${backend_base}/note?userId=${userId}&category=${cat}`,
+      {
+        method: 'GET',
         headers: {
           'x-api-key': API_KEY,
           Authorization: `Bearer ${authToken}`,
         },
-    });
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -107,21 +111,22 @@ export async function getNotesByCat(authToken, userId, cat) {
     console.error('Error in getNotesByCat function:', error);
     throw error;
   }
-
 }
 
-// get search results 
+// get search results
 // userId will be extracted from token
 export async function getSearchRes(authToken, searchInput) {
   try {
-    const response = await fetch(`${backend_base}/getAllSearchNotes/${searchInput}`, 
-    {
-        method:'GET',
+    const response = await fetch(
+      `${backend_base}/getAllSearchNotes/${searchInput}`,
+      {
+        method: 'GET',
         headers: {
           'x-api-key': API_KEY,
           Authorization: `Bearer ${authToken}`,
         },
-    });
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -134,9 +139,7 @@ export async function getSearchRes(authToken, searchInput) {
     console.error('Error in getSearchRes function:', error);
     throw error;
   }
-
 }
-
 
 //*********** POST REQUESTS ***********//
 
@@ -168,7 +171,6 @@ export async function addNote(authToken, newNote) {
   return await response.json();
 }
 
-
 // add a new category
 export async function addCat(authToken, cat) {
   const response = await fetch(`${backend_base}/categories`, {
@@ -189,7 +191,6 @@ export async function addCat(authToken, cat) {
 
   return await response.json();
 }
-
 
 //*********** DELETE REQUESTS ***********//
 
@@ -251,11 +252,17 @@ export async function deleteCat(authToken, id) {
   }
 }
 
-
 //*********** UPDATE REQUESTS ***********//
 
 // update an note's content edit note
-export async function updateNote(authToken, userId, id, newCategory, newTitle, newContent) {
+export async function updateNote(
+  authToken,
+  userId,
+  id,
+  newCategory,
+  newTitle,
+  newContent
+) {
   try {
     // Check if the 'id' parameter is defined
     if (!id) {
