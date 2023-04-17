@@ -44,5 +44,5 @@
 
 .noteEditor {
   /* flex-basis:300px; */ /*This sets the min height of the box as 300px, but it causes empty space at the end of the box*/
-  flex-grow:1;
+  flex-grow: 1;
 }

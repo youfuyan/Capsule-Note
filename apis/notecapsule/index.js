@@ -36,6 +36,7 @@ const userAuth = async (req, res, next) => {
       const token_parsed = jwtDecode(token);
       req.user_token = token_parsed;
     }
+
     next();
   } catch (error) {
     next(error);
@@ -45,8 +46,8 @@ app.use(userAuth);
 
 // lastest note is on the top
 async function getNotesDescSortedByDate(req, res) {
-  const userId = req.user_token.sub;
-  // const userId = req.params.userId;
+  // const userId = req.user_token.sub;
+  const userId = req.params.userId;
   // const userId = "test1"; // for testing
   const conn = await Datastore.open();
   const query = { userId: userId };
@@ -57,10 +58,12 @@ async function getNotesDescSortedByDate(req, res) {
   conn.find('note', options).json(res);
 }
 
+app.get('/getAllNotesDesc/:userId', getNotesDescSortedByDate);
+
 // latest note is on the bottonm
 async function getNotesAescSortedByDate(req, res) {
-  const userId = req.user_token.sub;
-  // const userId = req.params.userId;
+  // const userId = req.user_token.sub;
+  const userId = req.params.userId;
   // const userId = "test1"; // for testing
   const conn = await Datastore.open();
   const query = { userId: userId };
@@ -71,8 +74,10 @@ async function getNotesAescSortedByDate(req, res) {
   conn.find('note', options).json(res);
 }
 
+app.get('/getAllNotesAesc/:userId', getNotesAescSortedByDate);
+
+
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
-crudlify(app, { note: noteSchema }, options);
 
 // search the note table by keyword
 // show results by date desc order
@@ -97,10 +102,6 @@ async function getSearchRes(req, res) {
   };
   conn.find('note', options).json(res);
 }
-
-app.get('/getAllNotesDesc', getNotesDescSortedByDate);
-
-app.get('/getAllNotesAesc', getNotesAescSortedByDate);
 
 app.get('/getAllSearchNotes/:searchInput', getSearchRes);
 

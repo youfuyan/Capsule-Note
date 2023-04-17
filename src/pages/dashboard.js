@@ -27,7 +27,7 @@ import {
   addCat,
   getNotesByCat,
 } from '@/modules/Data';
-import { addNote, updateNote, deleteCat } from '@/modules/Data';
+import { addNote, updateNote, deleteCat, getNotesDesc, getNotesAsce } from '@/modules/Data';
 
 const Dashboard = () => {
   const { signOut } = useClerk();
@@ -46,13 +46,17 @@ const Dashboard = () => {
   // Create a ref to store the select input element
   const categorySelectRef = useRef(null);
 
+  const [sortDesc, setSortDesc] = useState(false);
+
   // Fetch notes and categories on initial render
   useEffect(() => {
     const fetchNotesAndCats = async () => {
       if (userId) {
         const token = await getToken({ template: 'codehooks' });
         setJwt(token);
+        // console.log("token is ", token);
         const fetchedNotes = await getNotes(jwt, userId);
+        console.log('Fetched notes:', fetchedNotes);
         setNotes(fetchedNotes);
         const fetchedCategories = await getAllCats(jwt, userId);
         setCategories(fetchedCategories);
@@ -126,6 +130,23 @@ const Dashboard = () => {
       console.error('Error deleting category:', error);
     }
   };
+
+  const handleSort = async (e) => {
+    try {
+      e.preventDefault();
+      if(sortDesc){
+        const fetchedNotes = await getNotesDesc(jwt, userId);
+        setNotes(fetchedNotes);
+      } else {
+        const fetchedNotes = await getNotesAsce(jwt, userId);
+        setNotes(fetchedNotes);
+      }
+
+      setSortDesc(!sortDesc);
+    } catch (error) {
+      console.error('Error sorting notes:', error);
+    }
+  }
 
   return (
     <>
@@ -211,7 +232,7 @@ const Dashboard = () => {
             <Button variant='outline-secondary' className='mx-1'>
               <BsFilter />
             </Button>
-            <Button variant='outline-secondary' className='mx-1'>
+            <Button variant='outline-secondary' className='mx-1' onClick={(e) => handleSort(e)}>
               <BsSortAlphaDown />
             </Button>
           </div>

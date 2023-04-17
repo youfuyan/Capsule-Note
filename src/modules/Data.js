@@ -20,10 +20,10 @@ export async function getNotes(authToken, userId) {
 }
 
 // get notes by asecding order, userId will be extracted from the token
-export async function getNotesAsce(authToken) {
+export async function getNotesAsce(authToken, userId) {
   // console.log(userId);
 
-  const result = await fetch(`${backend_base}/getAllNotesAesc`, {
+  const result = await fetch(`${backend_base}/getAllNotesAesc/${userId}`, {
     method: 'GET',
     headers: {
       'x-api-key': API_KEY,
@@ -36,10 +36,10 @@ export async function getNotesAsce(authToken) {
 }
 
 // get notes by desecding order, userId will be extracted from the token
-export async function getNotesDesc(authToken) {
+export async function getNotesDesc(authToken, userId) {
   // console.log(userId);
 
-  const result = await fetch(`${backend_base}/getAllNotesDesc`, {
+  const result = await fetch(`${backend_base}/getAllNotesDesc/${userId}`, {
     method: 'GET',
     headers: {
       'x-api-key': API_KEY,
