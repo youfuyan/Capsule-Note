@@ -298,14 +298,6 @@ export async function updateNote(
       console.error('Error updating note:', errorData);
       throw new Error('Failed to update note');
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error in updateNote function:', error);
-    throw error;
-  }
-}
-
     return await response.json();
   } catch (error) {
     console.error('Error in updateNote function:', error);
