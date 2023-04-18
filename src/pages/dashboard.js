@@ -48,6 +48,9 @@ const Dashboard = () => {
 
   const [sortDesc, setSortDesc] = useState(false);
 
+
+
+
   // Fetch notes and categories on initial render
   useEffect(() => {
     const fetchNotesAndCats = async () => {
@@ -66,11 +69,6 @@ const Dashboard = () => {
     fetchNotesAndCats();
   }, [userId, jwt]);
 
-  const handleSelectCategory = async (category) => {
-    setSelectedCategory(category);
-    const fetchedNotes = await getNotesByCat(jwt, userId, category);
-    setNotes(fetchedNotes);
-  };
 
   const handleAddCategory = async () => {
     if (newCategory && newCategory.trim()) {
@@ -146,6 +144,11 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error sorting notes:', error);
     }
+  }
+
+  const handleClickNote = async (e, id) => {
+    e.preventDefault();
+    window.location.href = `/note/${id}`;
   }
 
   return (
@@ -240,13 +243,13 @@ const Dashboard = () => {
           <Container>
             <ListGroup>
               {notes.map((note) => (
-                <ListGroup.Item key={note._id}>
+                <ListGroup.Item className={styles.noteContainer} key={note._id}>
                   <div className='d-flex justify-content-between align-items-center'>
-                    <Link href={`/note/${note._id}`}>
+                    <Link href={`/note/${note._id}`} className={styles.noteLink}>
                       {note.title || 'Untitled Note'}
                     </Link>
                     <Dropdown>
-                      <Dropdown.Toggle
+                      <Dropdown.Toggle className={styles.dropdownList}
                         variant='link'
                         id={`dropdown-basic-${note._id}`}
                       >

@@ -30,3 +30,26 @@
 
 /* Additional styles for other dashboard components */
 /* ... */
+
+.noteContainer {
+  background-color: rgba(208, 208, 208, 0.6);
+  margin: .2em;
+  border-radius: .5em;
+}
+
+.noteContainer:hover {
+  background-color: rgba(208, 208, 208, 0.9);
+}
+
+.noteLink {
+  text-decoration: none;
+  color: rgba(61, 61, 61, 0.9);
+}
+
+.noteLink:visited, .noteLink:hover, .noteLink:link, .noteLink:active { 
+  text-decoration: none; 
+}
+
+.dropdownList {
+  color: rgb(61, 61, 61);
+}
