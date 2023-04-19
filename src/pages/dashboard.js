@@ -228,7 +228,9 @@ const Dashboard = () => {
         </Modal>
         <div className='mainContent'>
           {/* Action buttons */}
+          
           <div className='d-flex justify-content-end p-3'>
+            
             <Button variant='outline-secondary' className='mx-1'>
               <BsSearch />
             </Button>

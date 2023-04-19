@@ -2,9 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@clerk/nextjs';
-import { Container, ListGroup, Navbar, Button, Nav } from 'react-bootstrap';
+import { Container, ListGroup, Navbar, Button, Nav, Dropdown } from 'react-bootstrap';
 import { AiOutlinePlus, AiOutlineArrowLeft } from 'react-icons/ai';
 import { getNotesByCat, deleteNote, addNote } from '@/modules/Data';
+import styles from '../../styles/dashboard.module.css';
+import Link from 'next/link';
+import {
+  BsList,
+  BsSearch,
+  BsFilter,
+  BsSortAlphaDown,
+  BsPlus,
+} from 'react-icons/bs';
 
 const CategoryPage = () => {
   const router = useRouter();
@@ -50,7 +59,7 @@ const CategoryPage = () => {
         variant='dark'
         style={{ backgroundColor: '#808080' }}
       >
-        <Nav.Link href='/dashboard' className='mr-auto'>
+        <Nav.Link href={'/dashboard'} className='mr-auto'>
           <AiOutlineArrowLeft /> Back
         </Nav.Link>
         <Navbar.Brand>{category} Notes</Navbar.Brand>
@@ -61,15 +70,35 @@ const CategoryPage = () => {
           {notes.map((note) => (
             <ListGroup.Item
               key={note._id}
-              className='d-flex justify-content-between align-items-center'
+              className={styles.noteContainer}
             >
-              <a href={`/note/${note._id}`}>{note.title || 'Untitled Note'}</a>
-              <Button
-                variant='danger'
-                onClick={() => handleDeleteNote(note._id)}
-              >
-                Delete
-              </Button>
+              <div className='d-flex justify-content-between align-items-center'>
+                <Link href={`/note/${note._id}`} className={styles.noteLink}>
+                      {note.title || 'Untitled Note'}
+                </Link>
+                <Dropdown>
+                    <Dropdown.Toggle className={styles.dropdownList}
+                      variant='link'
+                      id={`dropdown-basic-${note._id}`}
+                    >
+                      <BsList />
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      {/* Add options to the dropdown menu */}
+                      <Dropdown.Item href={`/note/${note._id}`}>
+                        Edit
+                      </Dropdown.Item>
+                      
+                      <Dropdown.Item href='#/action-2'>Export</Dropdown.Item>
+                      <Dropdown.Item href='#/action-3'>Copy</Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => handleDeleteNote(note._id)}
+                      >
+                        Delete
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
             </ListGroup.Item>
           ))}
         </ListGroup>

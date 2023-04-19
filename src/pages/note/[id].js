@@ -108,7 +108,8 @@ export default function Editor() {
             <Button
               variant='outline-light'
               className={styles.backButton}
-              onClick={() => router.push('/dashboard')}
+              // onClick={() => router.push('/dashboard')}
+              onClick={() => router.push(`/notes/${note.category}`)}
             >
               <ArrowLeft />
             </Button>
