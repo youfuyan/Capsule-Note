@@ -1,0 +1,22 @@
+[
+  [
+    "note",
+    {
+      "187902d07c6-tkbvo2i1p50zpj": {
+        "userId": "user_2ORTRwbvYn1YMISZ8jAhjL51hIM",
+        "title": "test",
+        "content": "<p>test</p>",
+        "category": "General",
+        "createdOn": "2023-04-17T17:05:09.160Z"
+      }
+    }
+  ],
+  [
+    "categories",
+    {}
+  ],
+  [
+    "_dbmetadata",
+    {}
+  ]
+]
