@@ -52,9 +52,9 @@ const Dashboard = () => {
       if (userId) {
         const token = await getToken({ template: 'codehooks' });
         setJwt(token);
-        const fetchedNotes = await getNotes(jwt, userId);
+        const fetchedNotes = await getNotes(token);
         setNotes(fetchedNotes);
-        const fetchedCategories = await getAllCats(jwt, userId);
+        const fetchedCategories = await getAllCats(token, userId);
         setCategories(fetchedCategories);
         console.log('Fetched categories:', fetchedCategories); // Log fetched categories for debugging
       }

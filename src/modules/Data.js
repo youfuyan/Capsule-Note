@@ -4,19 +4,17 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 //*********** GET REQUESTS ***********//
 
 // get all notes of the current user
-export async function getNotes(authToken, userId) {
-  console.log(userId);
-
-  const result = await fetch(`${backend_base}/note?userId=${userId}`, {
+export async function getNotes(authToken) {
+  const result = await fetch(`${backend_base}/note`, {
     method: 'GET',
     headers: {
-      'x-api-key': API_KEY,
+      'x-apikey': API_KEY,
       Authorization: `Bearer ${authToken}`,
     },
   });
 
-  console.log(JSON.stringify(result));
-  return await result.json();
+  // console.log(JSON.stringify(result));
+  return result.json();
 }
 
 // get notes by asecding order, userId will be extracted from the token
