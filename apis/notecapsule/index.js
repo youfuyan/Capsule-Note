@@ -27,22 +27,23 @@ const options = {
   schema: 'yup',
 };
 
-const userAuth = async (req, res, next) => {
-  try {
-    const { authorization } = req.headers;
-    if (authorization) {
-      const token = authorization.replace('Bearer ', '');
-      // NOTE this doesn't validate, but we don't need it to. codehooks is doing that for us.
-      const token_parsed = jwtDecode(token);
-      req.user_token = token_parsed;
-    }
+// const userAuth = async (req, res, next) => {
+//   try {
+//     const { authorization } = req.headers;
+//     if (authorization) {
+//       const token = authorization.replace('Bearer ', '');
+//       // NOTE this doesn't validate, but we don't need it to. codehooks is doing that for us.
+//       const token_parsed = jwtDecode(token);
+//       req.user_token = token_parsed;
+//     }
 
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-app.use(userAuth);
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// app.use(userAuth);
 
 // lastest note is on the top
 async function getNotesDescSortedByDate(req, res) {
@@ -56,7 +57,7 @@ async function getNotesDescSortedByDate(req, res) {
     sort: { createdOn: 0 },
   };
   conn.find('note', options).json(res);
-}
+};
 
 app.get('/getAllNotesDesc/:userId', getNotesDescSortedByDate);
 
@@ -72,7 +73,7 @@ async function getNotesAescSortedByDate(req, res) {
     sort: { createdOn: 1 },
   };
   conn.find('note', options).json(res);
-}
+};
 
 app.get('/getAllNotesAesc/:userId', getNotesAescSortedByDate);
 
@@ -82,9 +83,9 @@ app.get('/getAllNotesAesc/:userId', getNotesAescSortedByDate);
 // search the note table by keyword
 // show results by date desc order
 async function getSearchRes(req, res) {
-  // const userId = req.params.userId;
+  const userId = req.params.userId;
   // const userId = "test1";
-  const userId = req.user_token.sub;
+  // const userId = req.user_token.sub;
   const searchKey = req.params.searchInput;
   const conn = await Datastore.open();
   const query = {
@@ -93,7 +94,7 @@ async function getSearchRes(req, res) {
       { title: { $regex: searchKey, $options: 'gi' } },
       { content: { $regex: searchKey, $options: 'gi' } },
       { category: { $regex: searchKey, $options: 'gi' } },
-      { createdOn: { $regex: searchKey, $options: 'gi' } },
+      // { createdOn: { $regex: searchKey, $options: 'gi' } },
     ],
   };
   const options = {
@@ -101,9 +102,55 @@ async function getSearchRes(req, res) {
     filter: query,
   };
   conn.find('note', options).json(res);
-}
+};
 
-app.get('/getAllSearchNotes/:searchInput', getSearchRes);
+app.get('/getAllSearchNotes/:userId/:searchInput', getSearchRes);
+
+
+// const { Client } = require('@elastic/elasticsearch');
+
+// const client = new Client({
+//   node: 'http://localhost:3000',
+//   log: 'trace'
+// });
+
+// async function getSearchResFull(req, res) {
+//   const userId = "test1";
+//   const searchKey = req.params.searchInput;
+//   const conn = await Datastore.open();
+//   // const collection = conn.collection('note');
+//   const idx = await conn.createIndex('note', ['title', 'content', 'category']);
+
+//   // Let's start by indexing some data
+//   await client.index({
+//     index: 'notes',
+//     document: {
+//       title: 'Ned Stark',
+//       content: 'Winter is coming.'
+//     }
+//   })
+
+//   await client.index({
+//     index: 'notes',
+//     document: {
+//       title: 'Daenerys Targaryen',
+//       content: 'I am the blood of the dragon.'
+//     }
+//   })
+
+//   await client.indices.refresh({ index: 'notes' })
+
+//   const result= await client.search({
+//     index: 'notes',
+//     query: {
+//       match: { content: 'winter' }
+//     }
+//   })
+
+//   res.json(result);
+// };
+
+// app.get('/getAllSearchNotesFull/:userId/:searchInput', getSearchResFull);
 
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
 crudlify(app, { note: noteSchema, categories: categoriesSchema }, options);
