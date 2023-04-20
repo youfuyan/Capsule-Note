@@ -40,7 +40,7 @@ export default function Editor() {
       if (userId && id) {
         const token = await getToken({ template: 'codehooks' });
         setJwt(token);
-        const fetchedNote = await getNote(jwt, id);
+        const fetchedNote = await getNote(token, id);
         console.log('Fetched note:', fetchedNote);
         setNote(fetchedNote);
         setNoteTitle(fetchedNote.title);
@@ -80,14 +80,15 @@ export default function Editor() {
   // Function to handle auto-saving
   const handleAutoSave = async () => {
     try {
-      await updateNote(
-        jwt,
-        userId,
-        id,
-        note.category,
-        noteTitle, // Use the updated noteTitle state
-        noteContent // Use the updated noteContent state
-      );
+
+      const modifiedNote = {
+        title: noteTitle,
+        content: noteContent,
+        category: note.category,
+        userId: userId
+      };
+
+      await updateNote(jwt, id, modifiedNote);
       setIsSaved(true);
     } catch (error) {
       console.error('Failed to auto-save note:', error);

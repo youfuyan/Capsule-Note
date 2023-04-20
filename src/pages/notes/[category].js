@@ -18,7 +18,7 @@ const CategoryPage = () => {
       if (userId && category) {
         const token = await getToken({ template: 'codehooks' });
         setJwt(token);
-        const fetchedNotes = await getNotesByCat(jwt, userId, category);
+        const fetchedNotes = await getNotesByCat(token, category);
         setNotes(fetchedNotes);
       }
     };
@@ -33,7 +33,6 @@ const CategoryPage = () => {
   const handleCreateNewNote = async () => {
     // Create a default note for the user with the current category
     const defaultNote = {
-      userId: userId,
       title: 'Untitled Note',
       content: 'Type your note here...',
       category: category,
