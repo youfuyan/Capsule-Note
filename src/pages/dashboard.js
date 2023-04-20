@@ -28,6 +28,7 @@ import {
   getNotesByCat,
 } from '@/modules/Data';
 import { addNote, updateNote, deleteCat, getNotesDesc, getNotesAsce } from '@/modules/Data';
+import {generatePdfHTML} from '@/modules/GeneratePDF';
 
 const Dashboard = () => {
   const { signOut } = useClerk();
@@ -68,6 +69,10 @@ const Dashboard = () => {
     };
     fetchNotesAndCats();
   }, [userId, jwt]);
+
+  const generatePdf = async (content) => {
+    generatePdfHTML(content);
+  }
 
 
   const handleAddCategory = async () => {
@@ -270,7 +275,7 @@ const Dashboard = () => {
                         >
                           Move to Category
                         </Dropdown.Item>
-                        <Dropdown.Item href='#/action-2'>Export</Dropdown.Item>
+                        <Dropdown.Item onClick={() => generatePdf(note.content)} href='#/action-2'>Export</Dropdown.Item>
                         <Dropdown.Item href='#/action-3'>Copy</Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => handleDeleteNote(note._id)}
