@@ -138,8 +138,9 @@ export async function getSearchRes(authToken, searchInput) {
 // add a new note
 // new note should have the complete json fields, e.g.
 // {
-//   "title": "local note 4",
-//   "content": "new content for note 4",
+//   "userId": "test1",
+//   "title": "new title for Note 1",
+//   "content": "new content for note 111",
 //   "category": "health"
 // }
 export async function addNote(authToken, newNote) {
@@ -162,9 +163,6 @@ export async function addNote(authToken, newNote) {
 }
 
 // add a new category
-// {
-//   "name": "local note 4",
-// }
 export async function addCat(authToken, cat) {
   const response = await fetch(`${backend_base}/categories`, {
     method: 'POST',
@@ -183,7 +181,6 @@ export async function addCat(authToken, cat) {
 
   return await response.json();
 }
-
 //*********** DELETE REQUESTS ***********//
 
 // delete a note by _id

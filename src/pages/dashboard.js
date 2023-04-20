@@ -71,6 +71,7 @@ const Dashboard = () => {
   const handleAddCategory = async () => {
     if (newCategory && newCategory.trim()) {
       const newCat = { 
+        userId: userId, 
         "name": newCategory.trim() 
       };
       const createdCategory = await addCat(jwt, newCat); // Get the created category from the API response
@@ -87,12 +88,20 @@ const Dashboard = () => {
 
   const handleCreateNewNote = async () => {
     // Create a default note for the user
+    // const defaultNote = {
+    //   title: 'Untitled Note',
+    //   content: 'Type your note content here...',
+    //   category: 'General'
+    // };
+
     const defaultNote = {
+      userId: userId,
       title: 'Untitled Note',
       content: 'Type your note content here...',
       category: 'General',
     };
     const createdNote = await addNote(jwt, defaultNote);
+    console.log("created new note is", createdNote);
     // Redirect the user to the editor page for the newly created note
     window.location.href = `/note/${createdNote._id}`;
   };
@@ -110,7 +119,7 @@ const Dashboard = () => {
     };
     await updateNote(jwt, noteToMove._id, modifiedNote);
     // Refresh the notes list based on the selected category
-    const fetchedNotes = await getNotesByCat(jwt, newCategory);
+    const fetchedNotes = await getNotes(jwt);
     setNotes(fetchedNotes);
     // Close the move category modal
     setShowMoveCategoryModal(false);

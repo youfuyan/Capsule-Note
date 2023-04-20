@@ -32,8 +32,8 @@ const userAuth = async (req, res, next) => {
   
   try {
     const { authorization } = req.headers;
-    console.log('in userAuth req header \n', req.headers);
-    console.log('in userAuth \n', authorization);
+    // console.log('in userAuth req header \n', req.headers);
+    // console.log('in userAuth \n', authorization);
     if (authorization) {
       const token = authorization.replace("Bearer ", "");
       // NOTE this doesn't validate, but we don't need it to. codehooks is doing that for us.
@@ -162,18 +162,19 @@ async function editNote(req, res) {
 //   "content": "new content for note 4",
 //   "category": "health"
 // }
-async function createNote(req, res) {
-  const conn = await Datastore.open();
-  req.body.createdOn = new Date();
-  const doc = conn.insertOne("note", req.body);
-  res.status(201).json(req.body);
-}
+// async function createNote(req, res) {
+//   const conn = await Datastore.open();
+//   req.body.createdOn = new Date();
+//   const data = conn.insertOne("note", req.body);
+//   console.log(JSON.stringify(data));
+//   res.status(201).json(req.body);
+//   // console.log(res.json());
+// }
 
 async function getNotesSortedByDate(req, res) {
   const userId = req.user_token.sub;
   const sortByDesc = req.params.sortByDesc === "true";
-  if (sortByDesc)
-    console.log("sort by desc \n");
+
   const conn = await Datastore.open();
   const options = {
     filter: { "userId": userId },
@@ -196,7 +197,7 @@ app.get('/note', getAllNotes); // get all notes under curr user
 app.get("/note/:id", getNote); // get a note by note _id
 app.get("/note/category/:cat", getNoteByCat);
 app.put("/note/:id", editNote); // update note by _id with new json
-app.post("/note", createNote);  // add a new note to curr user
+// app.post("/note", createNote);  // add a new note to curr user
 app.get("/note/sortByDesc/:sortByDesc", getNotesSortedByDate);
 app.get('/note/getAllSearchNotes/:searchInput', getSearchRes);
 
@@ -255,18 +256,20 @@ async function editCat(req, res) {
 // {
 //   "name": "local note 4",
 // }
-async function createCat(req, res) {
-  const conn = await Datastore.open();
-  req.body.createdOn = new Date();
-  const doc = conn.insertOne("categories", req.body);
-  res.status(201).json(req.body);
-}
+// async function createCat(req, res) {
+//   const conn = await Datastore.open();
+//   req.body.createdOn = new Date();
+//   const data = conn.insertOne("categories", req.body);
+//   console.log("data is", data);
+//   res.status(201).json(data);
+//   // console.log("res is", res.json());
+// }
 
 
 app.get('/categories', getAllCats); // get all notes under curr user
 app.get("/categories/:id", getCat); // get a note by note _id
 app.put("/categories/:id", editCat); // update note by _id with new json
-app.post("/categories", createCat);  // add a new note to curr user
+// app.post("/categories", createCat);  // add a new note to curr user
 
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
 crudlify(app, { note: noteSchema, categories: categoriesSchema }, options);
