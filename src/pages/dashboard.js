@@ -52,7 +52,6 @@ const Dashboard = () => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [jwt, setJwt] = useState('');
   const [showLeftMenu, setShowLeftMenu] = useState(false);
   // Add state to manage the visibility of the move category modal
   const [showMoveCategoryModal, setShowMoveCategoryModal] = useState(false);
@@ -76,7 +75,6 @@ const Dashboard = () => {
     const fetchNotesAndCats = async () => {
       if (userId) {
         const token = await getToken({ template: 'codehooks' });
-        setJwt(token);
         const fetchedNotes = await getNotes(token);
         setNotes(fetchedNotes);
         const fetchedCategories = await getAllCats(token);
@@ -85,11 +83,12 @@ const Dashboard = () => {
       }
     };
     fetchNotesAndCats();
-  }, [userId, jwt]);
+  }, [userId]);
 
   const handleSelectCategory = async (category) => {
+    const token = await getToken({ template: 'codehooks' });
     setSelectedCategory(category);
-    const fetchedNotes = await getNotesByCat(jwt, category);
+    const fetchedNotes = await getNotesByCat(token, category);
     setNotes(fetchedNotes);
   };
 
@@ -100,11 +99,12 @@ const Dashboard = () => {
 
   const handleAddCategory = async () => {
     if (newCategory && newCategory.trim()) {
+      const token = await getToken({ template: 'codehooks' });
       const newCat = {
         userId: userId,
         name: newCategory.trim(),
       };
-      const createdCategory = await addCat(jwt, newCat); // Get the created category from the API response
+      const createdCategory = await addCat(token, newCat); // Get the created category from the API response
       setCategories([...categories, createdCategory]); // Add the created category to the state
       setNewCategory('');
       console.log('Added new category:', createdCategory);
@@ -112,7 +112,8 @@ const Dashboard = () => {
   };
 
   const handleDeleteNote = async (noteId) => {
-    await deleteNote(jwt, noteId);
+    const token = await getToken({ template: 'codehooks' });
+    await deleteNote(token, noteId);
     setNotes(notes.filter((note) => note._id !== noteId));
   };
 
@@ -130,7 +131,8 @@ const Dashboard = () => {
       content: 'Type your note content here...',
       category: 'General',
     };
-    const createdNote = await addNote(jwt, defaultNote);
+    const token = await getToken({ template: 'codehooks' });
+    const createdNote = await addNote(token, defaultNote);
     console.log('created new note is', createdNote);
     // Redirect the user to the editor page for the newly created note
     window.location.href = `/note/${createdNote._id}`;
@@ -147,9 +149,10 @@ const Dashboard = () => {
       category: newCategory,
       userId: userId,
     };
-    await updateNote(jwt, noteToMove._id, modifiedNote);
+    const token = await getToken({ template: 'codehooks' });
+    await updateNote(token, noteToMove._id, modifiedNote);
     // Refresh the notes list based on the selected category
-    const fetchedNotes = await getNotes(jwt);
+    const fetchedNotes = await getNotes(token);
     setNotes(fetchedNotes);
     // Close the move category modal
     setShowMoveCategoryModal(false);
@@ -157,7 +160,8 @@ const Dashboard = () => {
 
   const handleDeleteCategory = async (categoryId) => {
     try {
-      await deleteCat(jwt, categoryId);
+      const token = await getToken({ template: 'codehooks' });
+      await deleteCat(token, categoryId);
       setCategories(
         categories.filter((category) => category._id !== categoryId)
       );
@@ -195,14 +199,15 @@ const Dashboard = () => {
   // Fetch notes based on search input, filter criteria, and sort order
   const fetchNotes = async () => {
     let fetchedNotes = [];
+    const token = await getToken({ template: 'codehooks' });
     if (searchInput) {
-      fetchedNotes = await getSearchRes(jwt, searchInput);
+      fetchedNotes = await getSearchRes(token, searchInput);
     } else if (filterCriteria) {
-      fetchedNotes = await getNotesByCat(jwt, filterCriteria);
+      fetchedNotes = await getNotesByCat(token, filterCriteria);
     } else if (sortDesc) {
-      fetchedNotes = await getNotesDesc(jwt, userId);
+      fetchedNotes = await getNotesDesc(token, userId);
     } else {
-      fetchedNotes = await getNotesAsce(jwt, userId);
+      fetchedNotes = await getNotesAsce(token, userId);
     }
     setNotes(fetchedNotes);
   };
@@ -217,16 +222,17 @@ const Dashboard = () => {
 
   const handleFilter = async (criteria) => {
     // Check if the selected filter criteria are the same as the current filter
+    const token = await getToken({ template: 'codehooks' });
     if (criteria === filterCriteria) {
       // If they are the same, reset the filter criteria to show all notes
       setFilterCriteria('');
       // Fetch all notes
-      const fetchedNotes = await getNotes(jwt);
+      const fetchedNotes = await getNotes(token);
       setNotes(fetchedNotes);
     } else {
       // Otherwise, update the filter criteria and fetch notes based on the new criteria
       setFilterCriteria(criteria);
-      const fetchedNotes = await getNotesByCat(jwt, criteria);
+      const fetchedNotes = await getNotesByCat(token, criteria);
       setNotes(fetchedNotes);
     }
   };
@@ -326,7 +332,7 @@ const Dashboard = () => {
             </div>
           </Offcanvas.Body>
         </Offcanvas>
-        <div className='mainContent'>
+        <div className={`${styles.mainContainer} mainContent`}>
           {/* Action buttons */}
 
           <div className='d-flex justify-content-end p-3'>
@@ -412,7 +418,7 @@ const Dashboard = () => {
               {/* Floating action button to create a new note */}
               <Button
                 variant='primary'
-                className={`fab-button ${buttonClass}`}
+                className={`${styles.addButton} fab-button ${buttonClass}`}
                 onClick={handleCreateNewNote}
               >
                 <BsPlus />

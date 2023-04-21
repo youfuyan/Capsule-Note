@@ -56,3 +56,16 @@
 .dropdownList {
   color: rgb(61, 61, 61);
 }
+
+.addButton{
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 100px;
+}
+
+.mainContainer{
+  height: 100vh;
+}
