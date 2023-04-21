@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import Link from 'next/link';
 import styles from '../styles/dashboard.module.css';
+import { ThemeContext } from './_app';
 import { useClerk } from '@clerk/clerk-react';
 import { useAuth, useUser, UserButton, SignIn } from '@clerk/nextjs';
 import {
@@ -48,7 +49,7 @@ const Dashboard = () => {
 
   const [sortDesc, setSortDesc] = useState(false);
 
-
+  const {theme, setTheme} = useContext(ThemeContext);
 
 
   // Fetch notes and categories on initial render
@@ -163,6 +164,10 @@ const Dashboard = () => {
     window.location.href = `/note/${id}`;
   }
 
+  const handleToggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  }
+
   return (
     <>
       <Navbar
@@ -205,6 +210,13 @@ const Dashboard = () => {
                   className='btn btn-primary mt-2'
                 >
                   Add Category
+                </Button>
+                <br></br>
+                <Button
+                  onClick={handleToggleTheme}
+                  className='btn btn-primary mt-2'
+                >
+                  Toggle Theme
                 </Button>
               </Form>
               <ListGroup className='p-3'>
