@@ -33,8 +33,8 @@
 
 .noteContainer {
   background-color: rgba(208, 208, 208, 0.6);
-  margin: .2em;
-  border-radius: .5em;
+  margin: 0.2em;
+  border-radius: 0.5em;
 }
 
 .noteContainer:hover {
@@ -46,8 +46,11 @@
   color: rgba(61, 61, 61, 0.9);
 }
 
-.noteLink:visited, .noteLink:hover, .noteLink:link, .noteLink:active { 
-  text-decoration: none; 
+.noteLink:visited,
+.noteLink:hover,
+.noteLink:link,
+.noteLink:active {
+  text-decoration: none;
 }
 
 .dropdownList {

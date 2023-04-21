@@ -11,16 +11,22 @@ import {
   Modal,
   ListGroup,
   Form,
-  InputGroup,
+  Offcanvas,
   Dropdown,
 } from 'react-bootstrap';
+
 import {
   BsList,
   BsSearch,
   BsFilter,
   BsSortAlphaDown,
+  BsSortAlphaDownAlt,
   BsPlus,
+  BsMoon,
+  BsBoxArrowRight,
 } from 'react-icons/bs';
+// ...
+
 import {
   getNotes,
   deleteNote,
@@ -28,7 +34,14 @@ import {
   addCat,
   getNotesByCat,
 } from '@/modules/Data';
-import { addNote, updateNote, deleteCat, getNotesDesc, getNotesAsce } from '@/modules/Data';
+import {
+  addNote,
+  updateNote,
+  deleteCat,
+  getNotesDesc,
+  getNotesAsce,
+  getSearchRes,
+} from '@/modules/Data';
 
 const Dashboard = () => {
   const { signOut } = useClerk();
@@ -49,8 +62,13 @@ const Dashboard = () => {
 
   const [sortDesc, setSortDesc] = useState(false);
 
-  const {theme, setTheme} = useContext(ThemeContext);
+  const { theme, setTheme } = useContext(ThemeContext);
+  // Define classes based on the theme
+  const offcanvasClass = theme === 'dark' ? 'offcanvasDarkMode' : '';
+  const buttonClass = theme === 'dark' ? 'buttonDarkMode' : '';
 
+  const [searchInput, setSearchInput] = useState(''); // Search input from the user
+  const [filterCriteria, setFilterCriteria] = useState(''); // Filter criteria for notes (e.g., category)
 
   // Fetch notes and categories on initial render
   useEffect(() => {
@@ -76,9 +94,9 @@ const Dashboard = () => {
 
   const handleAddCategory = async () => {
     if (newCategory && newCategory.trim()) {
-      const newCat = { 
-        userId: userId, 
-        "name": newCategory.trim() 
+      const newCat = {
+        userId: userId,
+        name: newCategory.trim(),
       };
       const createdCategory = await addCat(jwt, newCat); // Get the created category from the API response
       setCategories([...categories, createdCategory]); // Add the created category to the state
@@ -107,7 +125,7 @@ const Dashboard = () => {
       category: 'General',
     };
     const createdNote = await addNote(jwt, defaultNote);
-    console.log("created new note is", createdNote);
+    console.log('created new note is', createdNote);
     // Redirect the user to the editor page for the newly created note
     window.location.href = `/note/${createdNote._id}`;
   };
@@ -121,7 +139,7 @@ const Dashboard = () => {
       title: noteToMove.title,
       content: noteToMove.content,
       category: newCategory,
-      userId: userId
+      userId: userId,
     };
     await updateNote(jwt, noteToMove._id, modifiedNote);
     // Refresh the notes list based on the selected category
@@ -142,38 +160,90 @@ const Dashboard = () => {
     }
   };
 
-  const handleSort = async (e) => {
-    try {
-      e.preventDefault();
-      if(sortDesc){
-        const fetchedNotes = await getNotesDesc(jwt, userId);
-        setNotes(fetchedNotes);
-      } else {
-        const fetchedNotes = await getNotesAsce(jwt, userId);
-        setNotes(fetchedNotes);
-      }
+  // const handleSort = async (e) => {
+  //   try {
+  //     e.preventDefault();
+  //     if (sortDesc) {
+  //       const fetchedNotes = await getNotesDesc(jwt, userId);
+  //       setNotes(fetchedNotes);
+  //     } else {
+  //       const fetchedNotes = await getNotesAsce(jwt, userId);
+  //       setNotes(fetchedNotes);
+  //     }
 
-      setSortDesc(!sortDesc);
-    } catch (error) {
-      console.error('Error sorting notes:', error);
-    }
-  }
+  //     setSortDesc(!sortDesc);
+  //   } catch (error) {
+  //     console.error('Error sorting notes:', error);
+  //   }
+  // };
 
   const handleClickNote = async (e, id) => {
     e.preventDefault();
     window.location.href = `/note/${id}`;
-  }
+  };
 
   const handleToggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
-  }
+  };
+
+  // Fetch notes based on search input, filter criteria, and sort order
+  const fetchNotes = async () => {
+    let fetchedNotes = [];
+    if (searchInput) {
+      fetchedNotes = await getSearchRes(jwt, searchInput);
+    } else if (filterCriteria) {
+      fetchedNotes = await getNotesByCat(jwt, filterCriteria);
+    } else if (sortDesc) {
+      fetchedNotes = await getNotesDesc(jwt, userId);
+    } else {
+      fetchedNotes = await getNotesAsce(jwt, userId);
+    }
+    setNotes(fetchedNotes);
+  };
+
+  // Handle search input change
+  const handleSearch = async (e) => {
+    setSearchInput(e.target.value);
+    await fetchNotes();
+  };
+
+  // Handle filter criteria change
+
+  const handleFilter = async (criteria) => {
+    // Check if the selected filter criteria are the same as the current filter
+    if (criteria === filterCriteria) {
+      // If they are the same, reset the filter criteria to show all notes
+      setFilterCriteria('');
+      // Fetch all notes
+      const fetchedNotes = await getNotes(jwt);
+      setNotes(fetchedNotes);
+    } else {
+      // Otherwise, update the filter criteria and fetch notes based on the new criteria
+      setFilterCriteria(criteria);
+      const fetchedNotes = await getNotesByCat(jwt, criteria);
+      setNotes(fetchedNotes);
+    }
+  };
+
+  // Handle sort order change
+  const handleSort = async () => {
+    setSortDesc(!sortDesc);
+    await fetchNotes();
+  };
+
+  // Update the notes list based on the selected category (if any)
+  useEffect(() => {
+    fetchNotes();
+  }, [selectedCategory]);
 
   return (
     <>
       <Navbar
         expand={false}
         variant='dark'
-        style={{ backgroundColor: '#808080' }}
+        style={{
+          backgroundColor: theme === 'dark' ? 'var(--gray5)' : '#808080',
+        }}
       >
         <Navbar.Toggle
           aria-controls='category-section'
@@ -184,53 +254,51 @@ const Dashboard = () => {
         <Navbar.Brand>{user.firstName}&apos;s Notes</Navbar.Brand>
       </Navbar>
       <div className='contentContainer' style={{ display: 'flex' }}>
-        <Modal
+        <Offcanvas
           show={showLeftMenu}
           onHide={() => setShowLeftMenu(false)}
-          dialogClassName='modal-90w'
-          centered
+          placement='start'
+          className={`modal-90w ${offcanvasClass}`}
         >
-          <Modal.Body>
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Categories</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
             <div className='sideMenu'>
               <div className='p-3'>
                 <UserButton />
               </div>
-              <h2 className='p-3'>Categories</h2>
               <Form className='p-3'>
                 <Form.Group>
                   <Form.Control
                     type='text'
                     value={newCategory}
+                    className={styles.noteContainer}
                     onChange={(e) => setNewCategory(e.target.value)}
                     placeholder='New category'
                   />
                 </Form.Group>
                 <Button
                   onClick={handleAddCategory}
-                  className='btn btn-primary mt-2'
+                  className={`btn btn-primary mt-2 ${buttonClass}`}
                 >
                   Add Category
-                </Button>
-                <br></br>
-                <Button
-                  onClick={handleToggleTheme}
-                  className='btn btn-primary mt-2'
-                >
-                  Toggle Theme
                 </Button>
               </Form>
               <ListGroup className='p-3'>
                 {categories.map((category) => (
-                  <ListGroup.Item key={category._id}>
+                  <ListGroup.Item
+                    className={styles.noteContainer}
+                    key={category._id}
+                  >
                     <div className='d-flex justify-content-between align-items-center'>
-                      {/* Category name and navigation */}
                       <Link
                         href={`/notes/${encodeURIComponent(category.name)}`}
                       >
                         {category.name}
                       </Link>
-                      {/* Delete button */}
                       <Button
+                        className={` ${buttonClass}`}
                         variant='danger'
                         size='sm'
                         onClick={() => handleDeleteCategory(category._id)}
@@ -242,27 +310,50 @@ const Dashboard = () => {
                 ))}
               </ListGroup>
               <div className='p-3 d-flex justify-content-between'>
-                <Button variant='link' onClick={() => signOut()}>
-                  Sign out
+                <Button variant='link' onClick={handleToggleTheme}>
+                  <BsMoon /> Dark Mode
                 </Button>
-                {/* Dark mode button goes here */}
+                <Button variant='link' onClick={() => signOut()}>
+                  <BsBoxArrowRight /> Sign Out
+                </Button>
               </div>
             </div>
-          </Modal.Body>
-        </Modal>
+          </Offcanvas.Body>
+        </Offcanvas>
         <div className='mainContent'>
           {/* Action buttons */}
-          
+
           <div className='d-flex justify-content-end p-3'>
-            
-            <Button variant='outline-secondary' className='mx-1'>
-              <BsSearch />
-            </Button>
-            <Button variant='outline-secondary' className='mx-1'>
-              <BsFilter />
-            </Button>
-            <Button variant='outline-secondary' className='mx-1' onClick={(e) => handleSort(e)}>
-              <BsSortAlphaDown />
+            <Form.Control
+              type='text'
+              value={searchInput}
+              onChange={handleSearch}
+              placeholder='Search...'
+              className='mx-1'
+            />
+            <Dropdown onSelect={handleFilter} className='mx-1'>
+              <Dropdown.Toggle variant='outline-secondary'>
+                <BsFilter />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {/* Dynamically generate filter options */}
+                {categories.map((category) => (
+                  <Dropdown.Item
+                    key={category._id}
+                    eventKey={category.name}
+                    active={category.name === filterCriteria}
+                  >
+                    {category.name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+            <Button
+              variant='outline-secondary'
+              className='mx-1'
+              onClick={handleSort}
+            >
+              {sortDesc ? <BsSortAlphaDown /> : <BsSortAlphaDownAlt />}
             </Button>
           </div>
           {/* Notes list */}
@@ -271,11 +362,15 @@ const Dashboard = () => {
               {notes.map((note) => (
                 <ListGroup.Item className={styles.noteContainer} key={note._id}>
                   <div className='d-flex justify-content-between align-items-center'>
-                    <Link href={`/note/${note._id}`} className={styles.noteLink}>
+                    <Link
+                      href={`/note/${note._id}`}
+                      className={styles.noteLink}
+                    >
                       {note.title || 'Untitled Note'}
                     </Link>
                     <Dropdown>
-                      <Dropdown.Toggle className={styles.dropdownList}
+                      <Dropdown.Toggle
+                        className={styles.dropdownList}
                         variant='link'
                         id={`dropdown-basic-${note._id}`}
                       >
@@ -311,7 +406,7 @@ const Dashboard = () => {
               {/* Floating action button to create a new note */}
               <Button
                 variant='primary'
-                className='fab-button'
+                className={`fab-button ${buttonClass}`}
                 onClick={handleCreateNewNote}
               >
                 <BsPlus />

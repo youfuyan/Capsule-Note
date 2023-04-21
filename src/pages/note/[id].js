@@ -80,12 +80,11 @@ export default function Editor() {
   // Function to handle auto-saving
   const handleAutoSave = async () => {
     try {
-
       const modifiedNote = {
         title: noteTitle,
         content: noteContent,
         category: note.category,
-        userId: userId
+        userId: userId,
       };
 
       await updateNote(jwt, id, modifiedNote);
@@ -110,7 +109,7 @@ export default function Editor() {
               variant='outline-light'
               className={styles.backButton}
               // onClick={() => router.push('/dashboard')}
-              onClick={() => router.push(`/notes/${note.category}`)}
+              onClick={() => router.push(`/dashboard`)}
             >
               <ArrowLeft />
             </Button>
