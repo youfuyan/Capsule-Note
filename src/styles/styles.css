@@ -28,7 +28,7 @@ element{
 :root{
     /*These colors are for use in this file, use descriptive names like 
     --dashboard-button-text for variables that will be used in other files*/
-    
+
     /* good for large elements like sections, cards, buttons in dark mode 
     good for text in light mode */
     --gray6:#1e1e1e;
@@ -127,4 +127,5 @@ element{
 /*This removes the border around the text input area*/
 .ql-container.ql-snow{
     border:none;
+    flex-grow: 1;
 }
