@@ -263,7 +263,8 @@ const Dashboard = () => {
         >
           <BsList />
         </Navbar.Toggle>
-        <Navbar.Brand>{user.firstName}&apos;s Notes</Navbar.Brand>
+        {/* If first name is not available, use email as name instead. */}
+        <Navbar.Brand>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
       </Navbar>
       <div className='contentContainer' style={{ display: 'flex' }}>
         <Offcanvas
