@@ -102,7 +102,7 @@ export default function Editor() {
     <div>
       {/* Check if the user is signed in before rendering the content */}
       {userId ? (
-        <div className={styles.editorContainer}>
+        <div className={styles.pageContainer}>
           {/* Top bar */}
           <div className={styles.topBar}>
             {/* Left button: Go back to dashboard */}
@@ -121,23 +121,24 @@ export default function Editor() {
               {isSaved ? 'Saved' : 'Saving...'}
             </div>
           </div>
+          <div className={styles.editorContainer}>
+            {/* Title input (editable) */}
+            <input
+              className={styles.noteTitleInput}
+              type='text'
+              value={noteTitle}
+              onChange={(e) => setNoteTitle(e.target.value)}
+              placeholder='Note Title'
+            />
 
-          {/* Title input (editable) */}
-          <input
-            className={styles.noteTitleInput}
-            type='text'
-            value={noteTitle}
-            onChange={(e) => setNoteTitle(e.target.value)}
-            placeholder='Note Title'
-          />
-
-          {/* Note Editor */}
-          <ReactQuill
-            className={styles.noteEditor}
-            value={noteContent}
-            onChange={setNoteContent}
-            placeholder='Start writing your note...'
-          />
+            {/* Note Editor */}
+            <ReactQuill
+              className={styles.noteEditor}
+              value={noteContent}
+              onChange={setNoteContent}
+              placeholder='Start writing your note...'
+            />
+          </div>
         </div>
       ) : (
         <div className='text-center mt-5'>

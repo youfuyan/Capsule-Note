@@ -1,3 +1,130 @@
 body{
     overflow-x: hidden;
 }
+
+ 
+/*if you want something to be one color in light mode and another color in dark mode,
+use the same variable name in both sections, but use different values,
+then use the color variable in the appropriate css file
+
+example
+----------
+:root{
+    --myColor:#ff0088;
+}
+[data-theme='dark]{
+    --myColor:#0066ff;
+}
+
+<- name.module.css ->
+element{
+    background-color:var(--myColor);
+}
+-----------
+
+*/
+
+/*variable colors for light mode*/
+:root{
+    /*These colors are for use in this file, use descriptive names like 
+    --dashboard-button-text for variables that will be used in other files*/
+    
+    /* good for large elements like sections, cards, buttons in dark mode 
+    good for text in light mode */
+    --gray6:#1e1e1e;
+    --gray5:#353535;
+    --gray4:#4e4e4e;
+    /* good for large elements like section, card, buttons in light mode 
+    good for text in dark mode */
+    --gray3:#696969;
+    --gray2:#858585;
+    --gray1:#a1a1a1;
+    --gray0:#f2f2f2;
+
+    /*default background color*/
+    --background:#ffffff;
+    background-color: var(--background);
+
+    /* editor page*/
+    --editor-header-background:black;
+    --editor-background:white;
+    --editor-text:black;
+        /*editor toolbar*/
+    --editor-toolbar-text:var(--gray4);
+    --editor-placeholder-text:var(--gray4);
+    --editor-toolbar-active:#AD68DE; /*this should be on the darker side and a similar hue as the var in dark-theme*/
+    --editor-toolbar-background:var(--gray0);
+    --caret:black;
+  }
+
+  /*variable colors for dark theme*/
+[data-theme='dark']{
+    /*default background color*/
+    --background:black;
+    background-color: var(--background);
+
+    /* editor page*/
+    --editor-header-background:var(--gray5);
+    --editor-background:var(--gray6);
+    --editor-text:white;
+        /*editor toolbar*/
+    --editor-toolbar-text:var(--gray1);
+    --editor-placeholder-text:var(--gray3);
+    --editor-toolbar-active:#debdf2; /*this should be on the lighter side and a similar hue as the var in light-theme*/
+    --editor-toolbar-background:var(--gray5);
+    --caret:var(--gray1);
+}
+
+
+/* NOTE: these styles for the quill editor must be applied in this file, when they are applied in the editor file it doesn't work*/
+/* Other styles should work fine in their own css files, quilljs is weird and I could only get it to work this way*/
+
+/* This is for changing the color of the placeholder text in the Quill .ql-editor.ql-blank::before*/
+.ql-editor.ql-blank::before{
+    color:var(--editor-placeholder-text)
+}
+/* This is for changing the color of the text in the toolbar (e.g. the word Normal)*/
+.ql-snow .ql-picker{
+    color:var(--editor-toolbar-text);
+}
+/* This the the color of the icons in the toolbar*/
+.ql-snow .ql-stroke{
+    stroke:var(--editor-toolbar-text);
+}
+/*This is the color of the toolbar icons when they are selected*/
+.ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected{
+    color:var(--editor-toolbar-active);
+}
+.ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow.ql-toolbar button:hover .ql-stroke-miter, .ql-snow .ql-toolbar button:hover .ql-stroke-miter, .ql-snow.ql-toolbar button:focus .ql-stroke-miter, .ql-snow .ql-toolbar button:focus .ql-stroke-miter, .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter{
+    color:var(--editor-toolbar-active);
+}
+.ql-snow.ql-toolbar button:hover .ql-fill, .ql-snow .ql-toolbar button:hover .ql-fill, .ql-snow.ql-toolbar button:focus .ql-fill, .ql-snow .ql-toolbar button:focus .ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow.ql-toolbar button:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar button:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar button:focus .ql-stroke.ql-fill, .ql-snow .ql-toolbar button:focus .ql-stroke.ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-stroke.ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill{
+    fill:var(--editor-toolbar-active);
+}
+.ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow.ql-toolbar button:hover .ql-stroke-miter, .ql-snow .ql-toolbar button:hover .ql-stroke-miter, .ql-snow.ql-toolbar button:focus .ql-stroke-miter, .ql-snow .ql-toolbar button:focus .ql-stroke-miter, .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter{
+    stroke:var(--editor-toolbar-active);
+}
+/* color of the toolbar icons when they are 'unselected' */
+.ql-snow.ql-toolbar button:hover:not(.ql-active), .ql-snow .ql-toolbar button:hover:not(.ql-active){
+    color:var(--editor-toolbar-text);
+}
+.ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-stroke, .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-stroke, .ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-stroke-miter, .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-stroke-miter{
+    stroke:var(--editor-toolbar-text);
+}
+.ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-fill, .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-fill, .ql-snow.ql-toolbar button:hover:not(.ql-active) .ql-stroke.ql-fill, .ql-snow .ql-toolbar button:hover:not(.ql-active) .ql-stroke.ql-fill{
+    fill:var(--editor-toolbar-text);
+}
+/*This the the color of the border of the header/normal when selected*/
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label{
+    border-color:var(--editor-toolbar-text);
+}
+/*This is to remove the default border around the toolbar, change the bckground color of the toolbar, and round the edges of the toolbar*/
+.ql-toolbar.ql-snow{
+    border:none;
+    background-color: var(--editor-toolbar-background);
+    border-radius: 20px;
+}
+/*This removes the border around the text input area*/
+.ql-container.ql-snow{
+    border:none;
+}

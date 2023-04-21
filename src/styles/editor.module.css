@@ -1,8 +1,15 @@
 /* styles/editor.module.css */
+.pageContainer{
+  background-color: var(--editor-background);
+  height:100vh;
+  caret-color:var(--caret);
+}
+
 .editorContainer {
   padding: 10px;
   display:flex;
   flex-direction: column;
+  height:100%;
 }
 
 .topBar {
@@ -11,7 +18,7 @@
   align-items: center;
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #3c4042; /* Dark gray color similar to Notion */
+  background-color: var(--editor-header-background); 
   color: #ffffff;
 }
 
@@ -40,9 +47,13 @@
   font-weight: bold;
   border: none;
   outline: none;
+  background-color: var(--editor-background);
+  color:var(--editor-text);
 }
 
 .noteEditor {
   /* flex-basis:300px; */ /*This sets the min height of the box as 300px, but it causes empty space at the end of the box*/
   flex-grow: 1;
 }
+
+
