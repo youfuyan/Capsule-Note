@@ -97,7 +97,7 @@ async function getSearchRes(req, res) {
       { title: { $regex: searchKey, $options: 'gi' } },
       { content: { $regex: searchKey, $options: 'gi' } },
       { category: { $regex: searchKey, $options: 'gi' } },
-      { createdOn: { $regex: searchKey, $options: 'gi' } },
+      // { createdOn: { $regex: searchKey, $options: 'gi' } },
     ],
   };
   const options = {
