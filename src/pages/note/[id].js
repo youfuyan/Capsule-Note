@@ -1,23 +1,24 @@
 // page/note/[id].js
-import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { useAuth, SignInButton } from '@clerk/nextjs';
-import { Button } from 'react-bootstrap';
-import { ArrowLeft } from 'react-bootstrap-icons';
-import { getNote, updateNote } from '@/modules/Data';
-import styles from '@/styles/editor.module.css';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { useAuth, SignInButton } from "@clerk/nextjs";
+import { Button } from "react-bootstrap";
+import { ArrowLeft } from "react-bootstrap-icons";
+import { getNote, updateNote } from "@/modules/Data";
+import styles from "@/styles/editor.module.css";
 // Dynamic import for react-quill to prevent server-side rendering issues
-const ReactQuill = dynamic(import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+import Webcam from "react-webcam";
 
 export default function Editor() {
   // Initialize states for the note title and content
-  const [note, setNote] = useState('');
-  const [noteTitle, setNoteTitle] = useState('');
-  const [noteContent, setNoteContent] = useState('');
-  const [updatedTitle, setUpdatedTitle] = useState('');
-  const [updatedContent, setUpdatedContent] = useState('');
+  const [note, setNote] = useState("");
+  const [noteTitle, setNoteTitle] = useState("");
+  const [noteContent, setNoteContent] = useState("");
+  const [updatedTitle, setUpdatedTitle] = useState("");
+  const [updatedContent, setUpdatedContent] = useState("");
   // State to track auto-save status
   const [isSaved, setIsSaved] = useState(false);
 
@@ -25,12 +26,57 @@ export default function Editor() {
   const router = useRouter();
   const { id } = router.query;
   const { isLoaded, userId, sessionId, getToken } = useAuth();
-  const [jwt, setJwt] = useState('');
+  const [jwt, setJwt] = useState("");
+  const [camera, setCamera] = useState(false);
+  const [img, setImg] = useState(null);
+  const webcamRef = useRef(null);
+
+  const videoConstraints = {
+    width: 350,
+    height: 400,
+    facingMode: "environment",
+  };
+
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setImg(imageSrc);
+    setCamera(false);
+    console.log(camera);
+  }, [webcamRef]);
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+  ];
 
   // Redirect to home page if user is not signed in
   useEffect(() => {
     if (!isLoaded && !userId) {
-      router.push('/');
+      router.push("/");
     }
   }, [userId, isLoaded, router]);
 
@@ -38,10 +84,10 @@ export default function Editor() {
   useEffect(() => {
     async function fetchNote() {
       if (userId && id) {
-        const token = await getToken({ template: 'codehooks' });
+        const token = await getToken({ template: "codehooks" });
         setJwt(token);
         const fetchedNote = await getNote(token, id);
-        console.log('Fetched note:', fetchedNote);
+        console.log("Fetched note:", fetchedNote);
         setNote(fetchedNote);
         setNoteTitle(fetchedNote.title);
         setNoteContent(fetchedNote.content);
@@ -90,7 +136,7 @@ export default function Editor() {
       await updateNote(jwt, id, modifiedNote);
       setIsSaved(true);
     } catch (error) {
-      console.error('Failed to auto-save note:', error);
+      console.error("Failed to auto-save note:", error);
     }
   };
 
@@ -106,7 +152,7 @@ export default function Editor() {
           <div className={styles.topBar}>
             {/* Left button: Go back to dashboard */}
             <Button
-              variant='outline-light'
+              variant="outline-light"
               className={styles.backButton}
               // onClick={() => router.push('/dashboard')}
               onClick={() => router.push(`/dashboard`)}
@@ -114,20 +160,39 @@ export default function Editor() {
               <ArrowLeft />
             </Button>
             {/* Mid part: Display note title (non-editable) */}
-            <div className={styles.pageTitle}>{noteTitle || 'Untitled'}</div>
+            <div className={styles.pageTitle}>{noteTitle || "Untitled"}</div>
             {/* Right part: Auto-save status */}
             <div className={styles.saveStatus}>
-              {isSaved ? 'Saved' : 'Saving...'}
+              {isSaved ? "Saved" : "Saving..."}
             </div>
+          </div>
+          <div className="Webcam">
+            {console.log(camera)}
+            {camera ? (
+              <>
+                <Webcam
+                  audio={false}
+                  height={400}
+                  width={400}
+                  ref={webcamRef}
+                  screenshotFormat="image/jpeg"
+                  mirrored={false}
+                  videoConstraints={videoConstraints}
+                />
+                <button onClick={capture}>Capture photo</button>
+              </>
+            ) : (
+              <button onClick={() => setCamera(true)}>Insert photo by camera</button>
+            )}
           </div>
           <div className={styles.editorContainer}>
             {/* Title input (editable) */}
             <input
               className={styles.noteTitleInput}
-              type='text'
+              type="text"
               value={noteTitle}
               onChange={(e) => setNoteTitle(e.target.value)}
-              placeholder='Note Title'
+              placeholder="Note Title"
             />
 
             {/* Note Editor */}
@@ -135,16 +200,18 @@ export default function Editor() {
               className={styles.noteEditor}
               value={noteContent}
               onChange={setNoteContent}
-              placeholder='Start writing your note...'
+              modules={modules}
+              formats={formats}
+              placeholder="Start writing your note..."
             />
           </div>
         </div>
       ) : (
-        <div className='text-center mt-5'>
-          <Alert variant='info'>
+        <div className="text-center mt-5">
+          <Alert variant="info">
             Please log in to access your Todo List.
-            <SignInButton mode='modal'>
-              <Button className='btn'>Sign in</Button>
+            <SignInButton mode="modal">
+              <Button className="btn">Sign in</Button>
             </SignInButton>
           </Alert>
         </div>
