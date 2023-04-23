@@ -1,7 +1,7 @@
 // the landing page '/'
 import { jsPDF } from "jspdf";
 
-export function generatePdfHTML(content) {
+export function generatePdfHTML(title, content) {
 
   const doc = new jsPDF('p', 'pt', 'letter');
 
@@ -9,7 +9,7 @@ export function generatePdfHTML(content) {
   const pageWidth = doc.internal.pageSize.getWidth();
 
   let htmlContent = document.createElement("div");
-  console.log(pageWidth);
+
   htmlContent.innerHTML += content;
   htmlContent.style.width = pageWidth + "px";
   htmlContent.style.fontSize = "10px";
@@ -21,7 +21,7 @@ export function generatePdfHTML(content) {
     // top right bottom left
     margin: [10, 10, 10, 10],
     callback: function (doc) {
-      doc.save();
+      doc.save(title + "-export");
     },
     autoPaging: 'text',
     y: 0,

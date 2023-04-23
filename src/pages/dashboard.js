@@ -92,8 +92,8 @@ const Dashboard = () => {
     setNotes(fetchedNotes);
   };
 
-  const generatePdf = async (content) => {
-    generatePdfHTML(content);
+  const generatePdf = async (title, content) => {
+    generatePdfHTML(title, content);
   };
 
 
@@ -402,7 +402,7 @@ const Dashboard = () => {
                         >
                           Move to Category
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => generatePdf(note.content)} href='#/action-2'>Export</Dropdown.Item>
+                        <Dropdown.Item onClick={() => generatePdf(note.title, note.content)} href='#/action-2'>Export</Dropdown.Item>
                         <Dropdown.Item href='#/action-3'>Copy</Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => handleDeleteNote(note._id)}
