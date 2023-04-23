@@ -28,20 +28,18 @@ export default function Editor() {
   const { isLoaded, userId, sessionId, getToken } = useAuth();
   const [jwt, setJwt] = useState("");
   const [camera, setCamera] = useState(false);
-  const [img, setImg] = useState(null);
   const webcamRef = useRef(null);
 
   const videoConstraints = {
-    width: 350,
-    height: 400,
+    width: 360,
+    height: 640,
     facingMode: "environment",
   };
 
-  const capture = useCallback(() => {
+  const capture = useCallback((content) => {
     const imageSrc = webcamRef.current.getScreenshot();
-    setImg(imageSrc);
+    setNoteContent(content + `<img src=${imageSrc} alt="screenshot" />`)
     setCamera(false);
-    console.log(camera);
   }, [webcamRef]);
 
   const modules = {
@@ -179,7 +177,7 @@ export default function Editor() {
                   mirrored={false}
                   videoConstraints={videoConstraints}
                 />
-                <button onClick={capture}>Capture photo</button>
+                <button onClick={() => capture(noteContent)}>Capture photo</button>
               </>
             ) : (
               <button onClick={() => setCamera(true)}>Insert photo by camera</button>
