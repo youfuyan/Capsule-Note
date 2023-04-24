@@ -37,6 +37,11 @@
 .pageTitle {
   flex: 1;
   text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right:2em;
+  padding-left:2em;
 }
 
 .saveStatus {
@@ -53,6 +58,9 @@
   outline: none;
   background-color: var(--editor-background);
   color:var(--editor-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .noteEditor {
