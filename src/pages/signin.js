@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
+import Loading from "@/components/Loading"
 import {
   SignIn,
   SignUpButton,
@@ -26,7 +27,8 @@ export default function SignInPage() {
   }, [isSignedIn]);
 
   if (loading) {
-    return <span>loading...</span>;
+    // return <span>loading...</span>;
+    return <Loading/>
   } else {
     return (
       <>

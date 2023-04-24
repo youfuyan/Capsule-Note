@@ -8,6 +8,7 @@ import { Button } from "react-bootstrap";
 import { ArrowLeft } from "react-bootstrap-icons";
 import { getNote, updateNote } from "@/modules/Data";
 import styles from "@/styles/editor.module.css";
+import Loading from "@/components/Loading"
 // Dynamic import for react-quill to prevent server-side rendering issues
 const ReactQuill = dynamic(import("react-quill"), { ssr: false });
 import Webcam from "react-webcam";
@@ -139,7 +140,8 @@ export default function Editor() {
   };
 
   if (!note) {
-    return <div>Loading...</div>;
+    // return <div>Loading...</div>;
+    return <Loading/>;
   }
   return (
     <div>
