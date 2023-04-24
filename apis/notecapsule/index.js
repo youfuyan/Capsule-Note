@@ -4,6 +4,21 @@ import { crudlify } from 'codehooks-crudlify';
 import jwtDecode from 'jwt-decode';
 import * as Yup from 'yup';
 
+// for imagekit autheticationEndpoint
+var ImageKit = require("imagekit");
+var fs = require('fs');
+
+var imagekit = new ImageKit({
+    publicKey : "public_D+1k5/V/4qV+udmpEMFVufzCaGw=",
+    privateKey : "private_MDzyTgBcCgvqOo1TnSomqpGhuBw=",
+    urlEndpoint : "https://ik.imagekit.io/g7a1rvpvz"
+});
+
+var authenticationParameters = imagekit.getAuthenticationParameters();
+console.log(authenticationParameters);
+
+
+
 // Define the schema for a Todo object using Yup
 const noteSchema = Yup.object({
   userId: Yup.string().required('User ID is required'), // User ID
