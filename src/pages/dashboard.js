@@ -28,12 +28,17 @@ import {
 // ...
 
 import {
+  RiSortAsc,
+  RiSortDesc,
+} from "react-icons/ri";
+
+import {
   getNotes,
   deleteNote,
   getAllCats,
   addCat,
   getNotesByCat,
-} from '@/modules/Data';
+} from '@/modules/Data.js';
 import {
   addNote,
   updateNote,
@@ -41,8 +46,9 @@ import {
   getNotesDesc,
   getNotesAsce,
   getSearchRes,
-} from '@/modules/Data';
-import {generatePdfHTML} from '@/modules/GeneratePDF';
+} from '@/modules/Data.js';
+
+import { generatePdfHTML } from '@/modules/GeneratePDF.js';
 
 const Dashboard = () => {
   const { signOut } = useClerk();
@@ -371,7 +377,7 @@ const Dashboard = () => {
               onClick={handleSort}
             >
               <span>Sort</span>
-              {sortDesc ? <BsSortAlphaDown /> : <BsSortAlphaDownAlt />}
+              {sortDesc ? <RiSortAsc /> : <RiSortDesc />}
             </Button>
           </div>
           {/* Notes list */}
