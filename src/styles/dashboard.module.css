@@ -1,9 +1,79 @@
 /* styles/dashboard.module.css */
-.dashboardContainer {
+/* .dashboardContainer {
   padding: 20px;
   background-color: #f8f8f8;
   min-height: 100vh;
 }
+*/
+
+.dashboardContainer{
+  background-color: var(--dashboard-background);
+}
+
+.searchBar input{
+  background-color: var(--dashboard-search-background);
+  /* color:var(--dashboard-filter-text); */
+  color:var(--dashboard-search-text);
+  caret-color: var(--caret);
+  border:none;
+  border-radius: 20px;
+
+}
+.searchBar input::placeholder{
+  color:var(--dashboard-search-placeholder-text);
+  
+}
+.searchBar input:focus{
+  background-color:var(--dashboard-search-background);
+  color:var(--dashboard-search-text);
+  box-shadow: none;
+  caret-color: var(--caret);
+}
+
+
+.filter button{
+  background-color: var(--dashboard-filter-background);
+  color:var(--dashboard-filter-text);
+  border:none;
+  border-radius: 20px;
+  display: flex;
+  align-items:center;
+  flex-direction: row;
+  height:100%;
+}
+
+.filter span{
+  padding-right: 0.4em;
+  padding-bottom: 0.2em;
+  display:none;
+}
+.sort{
+  background-color: var(--dashboard-filter-background);
+  color:var(--dashboard-filter-text);
+  border:none;
+  border-radius: 20px;
+  display: flex;
+  align-items:center;
+  flex-direction: row;
+  height:auto;
+
+}
+.sort span{
+  padding-right: 0.4em;
+  display:none;
+  padding-bottom: 0.2em;
+}
+
+@media screen and (min-width:1000px) {
+  .filter span{
+    display:inline;
+  }
+  .sort span{
+    display:inline;
+  }
+}
+
+/*
 
 .newNoteButton {
   display: flex;
@@ -26,24 +96,29 @@
 
 .newNoteButton:hover {
   background-color: #388e3c;
-}
+} */
 
 /* Additional styles for other dashboard components */
 /* ... */
 
-.noteContainer {
-  background-color: rgba(208, 208, 208, 0.6);
-  margin: 0.2em;
-  border-radius: 0.5em;
+.container{
+  max-width:100vw;
 }
 
+.noteContainer {
+  background-color: var(--dashboard-note-background);
+  margin: 0.2em;
+  
+}
+
+
 .noteContainer:hover {
-  background-color: rgba(208, 208, 208, 0.9);
+  background-color: var(--dashboard-note-hover-background);
 }
 
 .noteLink {
   text-decoration: none;
-  color: rgba(61, 61, 61, 0.9);
+  color:var(--dashboard-note-text);
 }
 
 .noteLink:visited,
@@ -54,18 +129,64 @@
 }
 
 .dropdownList {
-  color: rgb(61, 61, 61);
+  color:var(--dashboard-note-text);
 }
 
 .addButton{
   position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 5rem;
-  height: 5rem;
-  border-radius: 100px;
+  bottom: 15px;
+  right: 15px;
+  /* width: 3rem; */
+  height: 3rem;
+  border-radius: 1.5rem;
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color:var(--dashboard-header-text);
+  background-color: var(--dashboard-header-background);
+  border:none;
 }
+.addButton:hover{
+  background-color: var(--dashboard-add-button-hover-background);
+}
+.addButton svg{
+  height:1.5rem;
+  width:1.5rem;
+}
+.addButton span{
+  display:none;
+  padding-bottom: 0.25em;
+  padding-right:0.4em;
+  padding-left:0.4em;
+}
+@media screen and (min-width:1000px) {
+  .addButton span{
+    display:inline;
+  }
+}
+
 
 .mainContainer{
   height: 100vh;
+}
+
+
+
+/* Header */
+.navBar{
+  background-color: var(--dashboard-header-background);
+  /* box-shadow: 0 1px 10px 0 rgba(0,0,0,.1); */
+}
+.navBarToggle{
+  color:var(--dashboard-header-text);
+  /* using flex makes the menu button more centered vertically*/
+  display:flex;
+  border:none;
+}
+.navBarToggle:focus{
+  box-shadow: none;
+}
+.navBarText{
+  color:var(--dashboard-header-text);
 }

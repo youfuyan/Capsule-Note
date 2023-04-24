@@ -44,34 +44,75 @@ element{
   --background: #ffffff;
   background-color: var(--background);
 
+  /* dashboard page */
+  --dashboard-header-background: var(--gray6);
+  --dashboard-header-text:var(--gray0);
+  --dashboard-background:var(--background);
+  --dashboard-search-background: var(--gray0);
+  --dashboard-search-text:var(--gray6);
+  --dashboard-search-placeholder-text:var(--gray4);
+  --dashboard-filter-background:var(--gray6);
+  --dashboard-filter-text:var(--gray0);
+  --dashboard-note-background:var(--background);
+  --dashboard-note-text:var(--gray5);
+  --dashboard-note-border:var(--gray0);
+  --dashboard-note-hover-background:var(--gray0);
+  --dashboard-add-button-hover-background:var(--gray4);
+
   /* editor page*/
-  --editor-header-background: black;
+  --editor-header-background: var(--gray6);
+  --editor-header-text:var(--gray0);
   --editor-background: white;
-  --editor-text: black;
+  --editor-text: var(--gray5);
   /*editor toolbar*/
-  --editor-toolbar-text: var(--gray4);
+  --editor-toolbar-text: var(--gray4); 
   --editor-placeholder-text: var(--gray4);
   --editor-toolbar-active: #ad68de; /*this should be on the darker side and a similar hue as the var in dark-theme*/
   --editor-toolbar-background: var(--gray0);
-  --caret: black;
+  --caret: var(--gray5);
+
+  /* loading page */
+  --loading-background: white;
+  --loading-text:var(--gray3);
 }
 
 /*variable colors for dark theme*/
 [data-theme='dark'] {
   /*default background color*/
-  --background: black;
+  --background: var(--gray6);
   background-color: var(--background);
+
+  /* dashboard page */
+  --dashboard-header-background: var(--gray5);
+  --dashboard-header-text:white;
+  --dashboard-background:var(--gray6);
+  --dashboard-search-background:var(--gray5);
+  --dashboard-search-text:var(--gray0);
+  --dashboard-search-placeholder-text:var(--gray1);
+  --dashboard-filter-background:var(--gray5);
+  --dashboard-filter-text:var(--gray0);
+  --dashboard-note-background:var(--background);
+  --dashboard-note-text:var(--gray0);
+  --dashboard-note-border:var(--gray5);
+  --dashboard-note-hover-background:var(--gray5);
+  --dashboard-add-button-hover-background:var(--gray4);
+  
 
   /* editor page*/
   --editor-header-background: var(--gray5);
+  --editor-header-text:var(--gray0);
   --editor-background: var(--gray6);
-  --editor-text: white;
+  --editor-text: var(--gray1);
   /*editor toolbar*/
   --editor-toolbar-text: var(--gray1);
   --editor-placeholder-text: var(--gray3);
   --editor-toolbar-active: #debdf2; /*this should be on the lighter side and a similar hue as the var in light-theme*/
   --editor-toolbar-background: var(--gray5);
   --caret: var(--gray1);
+
+  /* loading page */
+  --loading-background: var(--gray6);
+  --loading-text:var(--gray1);
 }
 
 /* NOTE: these styles for the quill editor must be applied in this file, when they are applied in the editor file it doesn't work*/
@@ -234,31 +275,48 @@ element{
 }
 
 /* Add this style to handle dark mode for the button */
-.buttonDarkMode {
+/* .buttonDarkMode {
   background-color: var(--gray4);
   color: var(--gray1);
-}
+} */
 
 /* Add this style for button hover in dark mode */
-.buttonDarkMode:hover {
+/* .buttonDarkMode:hover {
   background-color: var(--gray3);
-}
+} */
 
 [data-theme='dark'] .offcanvasDarkMode {
   background-color: var(--gray5);
 }
 
-[data-theme='dark'] .buttonDarkMode {
+/* [data-theme='dark'] .buttonDarkMode {
   background-color: var(--gray3);
   color: var(--gray6);
 }
 
 [data-theme='dark'] .buttonDarkMode:hover {
   background-color: var(--gray2);
-}
+} */
 
 /* Dark mode styles for the Quill editor's content area */
-[data-theme='dark'] .ql-editor {
-  background-color: var(--gray6); /* Dark background color */
-  color: var(--gray1); /* Light text color */
+.ql-editor{
+    color:var(--editor-text)
+}
+
+
+
+.list-group-item:first-child{
+  border:none;
+  border-radius: 0px;
+  border-bottom: var(--dashboard-note-border) 1px solid;
+}
+.list-group-item + .list-group-item{
+  border:none;
+  border-radius: 0px;
+  border-bottom: var(--dashboard-note-border) 1px solid;
+}
+.list-group-item:last-child{
+  border:none;
+  border-radius: 0px;
+  border-bottom: var(--dashboard-note-border) 1px solid;
 }

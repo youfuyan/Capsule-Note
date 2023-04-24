@@ -3,6 +3,7 @@ import styles from '@/styles/Home.module.css';
 import { useEffect, useState } from 'react';
 import { SignUp, useUser, SignedOut } from '@clerk/nextjs';
 import { useRouter } from 'next/router';
+import Loading from "@/components/Loading"
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,8 @@ export default function SignUpPage() {
   }, [isSignedIn]);
 
   if (loading) {
-    return <span>loading...</span>;
+    // return <span>loading...</span>;
+    return <Loading/>;
   } else {
     return (
       <>

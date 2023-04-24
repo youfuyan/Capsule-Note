@@ -249,22 +249,24 @@ const Dashboard = () => {
   }, [selectedCategory]);
 
   return (
-    <>
+    <div className={styles.dashboardContainer}>
       <Navbar
         expand={false}
-        variant='dark'
-        style={{
-          backgroundColor: theme === 'dark' ? 'var(--gray5)' : '#808080',
-        }}
+        // variant='dark'
+        // style={{
+        //   backgroundColor: theme === 'dark' ? 'var(--gray5)' : '#808080',
+        // }}
+        className={styles.navBar}
       >
         <Navbar.Toggle
           aria-controls='category-section'
           onClick={() => setShowLeftMenu(!showLeftMenu)}
+          className={styles.navBarToggle}
         >
           <BsList />
         </Navbar.Toggle>
         {/* If first name is not available, use email as name instead. */}
-        <Navbar.Brand>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
+        <Navbar.Brand className={styles.navBarText}>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
       </Navbar>
       <div className='contentContainer' style={{ display: 'flex' }}>
         <Offcanvas
@@ -336,7 +338,7 @@ const Dashboard = () => {
         <div className={`${styles.mainContainer} mainContent`}>
           {/* Action buttons */}
 
-          <div className='d-flex justify-content-end p-3'>
+          <div className={`${styles.searchBar} d-flex justify-content-end p-3`}>
             <Form.Control
               type='text'
               value={searchInput}
@@ -344,8 +346,10 @@ const Dashboard = () => {
               placeholder='Search...'
               className='mx-1'
             />
-            <Dropdown onSelect={handleFilter} className='mx-1'>
+            <Dropdown onSelect={handleFilter} className={`${styles.filter} mx-1`}>
+              
               <Dropdown.Toggle variant='outline-secondary'>
+                <span>Filter</span>
                 <BsFilter />
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -363,14 +367,15 @@ const Dashboard = () => {
             </Dropdown>
             <Button
               variant='outline-secondary'
-              className='mx-1'
+              className={`${styles.sort} mx-1`}
               onClick={handleSort}
             >
+              <span>Sort</span>
               {sortDesc ? <BsSortAlphaDown /> : <BsSortAlphaDownAlt />}
             </Button>
           </div>
           {/* Notes list */}
-          <Container>
+          <Container className={styles.container}>
             <ListGroup>
               {notes.map((note) => (
                 <ListGroup.Item className={styles.noteContainer} key={note._id}>
@@ -422,6 +427,7 @@ const Dashboard = () => {
                 className={`${styles.addButton} fab-button ${buttonClass}`}
                 onClick={handleCreateNewNote}
               >
+                <span>New Note</span>
                 <BsPlus />
               </Button>
             </div>
@@ -500,7 +506,7 @@ const Dashboard = () => {
           filter: blur(${(props) => (props.showLeftMenu ? '5px' : '0')});
         }
       `}</style>
-    </>
+    </div>
   );
 };
 
