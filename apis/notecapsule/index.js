@@ -8,14 +8,21 @@ import * as Yup from 'yup';
 var ImageKit = require("imagekit");
 var fs = require('fs');
 
-var imagekit = new ImageKit({
+// get notes by category
+async function authByImageKit(req, res){
+  var imagekit = new ImageKit({
     publicKey : "public_D+1k5/V/4qV+udmpEMFVufzCaGw=",
     privateKey : "private_MDzyTgBcCgvqOo1TnSomqpGhuBw=",
     urlEndpoint : "https://ik.imagekit.io/g7a1rvpvz"
 });
 
-var authenticationParameters = imagekit.getAuthenticationParameters();
-console.log(authenticationParameters);
+  var authenticationParameters = imagekit.getAuthenticationParameters();
+  console.log(authenticationParameters);
+
+  res.json(authenticationParameters);
+}
+
+app.get('/auth', authByImageKit); // get all notes under curr user
 
 
 

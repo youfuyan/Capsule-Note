@@ -335,13 +335,13 @@ export async function uploadImg(authToken, file) {
       'Content-Type': 'application/json', // Ensure the Content-Type header is set
       Authorization: `Bearer ${authToken}`, // Add the JWT token to the request header
     },
-    body: JSON.stringify(cat),
+    body: JSON.stringify(file),
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    console.error('Error adding new category:', errorData);
-    throw new Error('Failed to adding new category');
+    console.error('Error adding new image to imagekit:', errorData);
+    throw new Error('Failed to adding new image to imagekit');
   }
 
   return await response.json();

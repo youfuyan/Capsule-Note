@@ -1,10 +1,11 @@
 import React from 'react';
 import { IKImage, IKContext, IKUpload } from 'imagekitio-react'
+import { uploadImg } from "@/modules/Data.js";
 
 function ImgUpload() {
   const publicKey = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY;
   let urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT;
-  const authenticationEndpoint = "http://localhost:3001/auth";
+  const authenticationEndpoint = "http://localhost:3001/dev/auth";
 
   return (
     <div className="ImgUpload">
