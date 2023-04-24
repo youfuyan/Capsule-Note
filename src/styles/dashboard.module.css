@@ -1,0 +1,71 @@
+/* styles/dashboard.module.css */
+.dashboardContainer {
+  padding: 20px;
+  background-color: #f8f8f8;
+  min-height: 100vh;
+}
+
+.newNoteButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  padding: 10px;
+  margin: 20px auto;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: #ffffff;
+  cursor: pointer;
+  text-align: center;
+}
+
+.newNoteButton a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.newNoteButton:hover {
+  background-color: #388e3c;
+}
+
+/* Additional styles for other dashboard components */
+/* ... */
+
+.noteContainer {
+  background-color: rgba(208, 208, 208, 0.6);
+  margin: 0.2em;
+  border-radius: 0.5em;
+}
+
+.noteContainer:hover {
+  background-color: rgba(208, 208, 208, 0.9);
+}
+
+.noteLink {
+  text-decoration: none;
+  color: rgba(61, 61, 61, 0.9);
+}
+
+.noteLink:visited,
+.noteLink:hover,
+.noteLink:link,
+.noteLink:active {
+  text-decoration: none;
+}
+
+.dropdownList {
+  color: rgb(61, 61, 61);
+}
+
+.addButton{
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 100px;
+}
+
+.mainContainer{
+  height: 100vh;
+}
