@@ -1,9 +1,9 @@
 /* styles/editor.module.css */
 .pageContainer{
   background-color: var(--editor-background);
-  height:100vh;
+  height:100%;
   caret-color:var(--caret);
-
+  min-height:100vh;
   display:flex;
   flex-direction: column;
 }
