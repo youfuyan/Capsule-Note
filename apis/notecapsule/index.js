@@ -10,10 +10,16 @@ var fs = require('fs');
 
 // get notes by category
 async function authByImageKit(req, res){
+
+  //dont use it like this. this is unsafe and unreliable
+  const publicKey = 
+  const privateKey = 
+  const urlEndpoint = 
+  
   var imagekit = new ImageKit({
-    publicKey : "public_D+1k5/V/4qV+udmpEMFVufzCaGw=",
-    privateKey : "private_MDzyTgBcCgvqOo1TnSomqpGhuBw=",
-    urlEndpoint : "https://ik.imagekit.io/g7a1rvpvz"
+    publicKey : publicKey,
+    privateKey : privateKey,
+    urlEndpoint : urlEndpoint
 });
 
   var authenticationParameters = imagekit.getAuthenticationParameters();
