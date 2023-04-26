@@ -3,6 +3,7 @@ import { crudlify } from 'codehooks-crudlify';
 // import { date, object, string, number, boolean} from 'yup';
 import jwtDecode from 'jwt-decode';
 import * as Yup from 'yup';
+import {parse} from 'node-html-parser';
 
 // for imagekit autheticationEndpoint
 var ImageKit = require("imagekit");
@@ -10,16 +11,11 @@ var fs = require('fs');
 
 // get notes by category
 async function authByImageKit(req, res){
-
-  //dont use it like this. this is unsafe and unreliable
-  const publicKey = 
-  const privateKey = 
-  const urlEndpoint = 
   
   var imagekit = new ImageKit({
-    publicKey : publicKey,
-    privateKey : privateKey,
-    urlEndpoint : urlEndpoint
+    publicKey : process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey : process.env.IMAGEKIT_PRIVATE_KET,
+    urlEndpoint : process.env.IMAGEKIT_URL_ENDPOINT
 });
 
   var authenticationParameters = imagekit.getAuthenticationParameters();
@@ -29,7 +25,6 @@ async function authByImageKit(req, res){
 }
 
 app.get('/auth', authByImageKit); // get all notes under curr user
-
 
 
 // Define the schema for a Todo object using Yup
@@ -144,6 +139,45 @@ async function getAllNotes(req, res) {
   };
   conn.getMany("note", options).json(res);
 }
+
+async function handleDeleteImage(req,res){
+  let imageKitImages = [];
+  let notesContents = [];
+
+  let notes;
+  const conn = await Datastore.open();
+  const allNotes = conn.getMany("note").json(notes);
+
+  const imagekit = new ImageKit({
+    publicKey : process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey : process.env.IMAGEKIT_PRIVATE_KET,
+    urlEndpoint : process.env.IMAGEKIT_URL_ENDPOINT
+  });
+
+  console.log(notes);
+  // console.log("NOTES: " + allNotes.content);
+  imagekit.listFiles({searchQuery: 'createdAt >= "2d"'}, function(error, result){
+    if(error){
+      console.log("Error: " + error);
+    } else{
+      result.forEach((data) => {
+        console.log(data.fileId);
+        console.log(data.url);
+        // let imageObj = {
+        //   id: data.fileId,
+        //   url: data.url
+        // }
+        // imageKitImages.push(imageObj);
+      })
+
+    }
+  })
+  
+  
+  
+
+}
+app.job('* * * * *', handleDeleteImage);
 
 // get note by id
 async function getNote(req, res){
