@@ -417,72 +417,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        {/* <Offcanvas
-          show={showLeftMenu}
-          onHide={() => setShowLeftMenu(false)}
-          placement='start'
-          className={`modal-90w ${offcanvasClass}`}
-        >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Categories</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <div className='sideMenu'>
-              <div className='p-3'>
-                <UserButton />
-              </div>
-              <Form className='p-3'>
-                <Form.Group>
-                  <Form.Control
-                    type='text'
-                    value={newCategory}
-                    className={styles.noteContainer}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    placeholder='New category'
-                  />
-                </Form.Group>
-                <Button
-                  onClick={handleAddCategory}
-                  className={`btn btn-primary mt-2 ${buttonClass}`}
-                >
-                  Add Category
-                </Button>
-              </Form>
-              <ListGroup className='p-3'>
-                {categories.map((category) => (
-                  <ListGroup.Item
-                    className={styles.noteContainer}
-                    key={category._id}
-                  >
-                    <div className='d-flex justify-content-between align-items-center'>
-                      <Link
-                        href={`/notes/${encodeURIComponent(category.name)}`}
-                      >
-                        {category.name}
-                      </Link>
-                      <Button
-                        className={` ${buttonClass}`}
-                        variant='danger'
-                        size='sm'
-                        onClick={() => handleDeleteCategory(category._id)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-              <div className='p-3 d-flex justify-content-between'>
-                <Button variant='link' onClick={handleToggleTheme}>
-                  <BsMoon /> Dark Mode
-                </Button>
-                <Button variant='link' onClick={() => signOut()}>
-                  <BsBoxArrowRight /> Sign Out
-                </Button>
-              </div>
-            </div>
-          </Offcanvas.Body>
-        </Offcanvas> */}
+   
         <div className={`${styles.mainContainer} mainContent`}>
           {/* Action buttons */}
 

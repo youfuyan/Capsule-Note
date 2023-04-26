@@ -266,10 +266,7 @@
   border:none;
   padding:0;
 }
-/* .newCategoryButton:hover{
-  height:6rem;
-  width:6rem;
-} */
+
 .newCategoryButton:hover svg{
   height:2rem;
   width:2rem;
@@ -305,14 +302,7 @@
 
 }
 
-/* @media screen and (min-width:1000){
-  .mainContent{
-    max-width: 80vw;
-    position: absolute;
-    top:56px;
-    left:20vw;
-  }
-} */
+
   .deleteButton{
     background-color: transparent;
     border:none;
