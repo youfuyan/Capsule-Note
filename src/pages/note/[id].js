@@ -14,6 +14,7 @@ import { Button } from "react-bootstrap";
 import { ArrowLeft } from "react-bootstrap-icons";
 import { getNote, updateNote } from "@/modules/Data";
 import styles from "@/styles/editor.module.css";
+import sanitizeHtml from 'sanitize-html';
 // Dynamic import for react-quill to prevent server-side rendering issues
 const ReactQuill = dynamic(
   async () => {
@@ -122,14 +123,6 @@ export default function Editor() {
     []
   );
 
-  const usePrevious = (value) => {
-    const ref = useRef();
-    useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current;
-  };
-
   const capture = useCallback(
     async (content) => {
       const imageSrc = webcamRef.current.getScreenshot();
@@ -140,10 +133,9 @@ export default function Editor() {
           fileName: "abc.jpg",
         },
         function (err, result) {
+          const html = sanitizeHtml(content + `<img src=${result.url} alt="screenshot" />`)
           // console.log(result.url);
-          setNoteContent(
-            content + `<img src=${result.url} alt="screenshot" />`
-          );
+          setNoteContent(html);
           setCamera(false);
         }
       );
@@ -183,7 +175,7 @@ export default function Editor() {
         const fetchedNote = await getNote(token, id);
         setNote(fetchedNote);
         setNoteTitle(fetchedNote.title);
-        setNoteContent(fetchedNote.content);
+        setNoteContent(sanitizeHtml(fetchedNote.content));
       }
     }
     fetchNote();
@@ -191,9 +183,7 @@ export default function Editor() {
 
   // Auto-save when noteTitle or noteContent change
 
-  const prevNoteContent = usePrevious({ noteContent, setNoteContent });
   useEffect(() => {
-    // console.log(prevNoteContent);
     setIsSaved(false);
     const autoSaveDelay = 1000; // Auto-save delay in milliseconds
     const timeoutId = setTimeout(handleAutoSave, autoSaveDelay);
@@ -289,7 +279,7 @@ export default function Editor() {
               className={styles.noteEditor}
               value={noteContent}
               onChange={(content, delta, source, editor) => {
-                setNoteContent(content);
+                setNoteContent(sanitizeHtml(content));
               }}
               modules={modules}
               placeholder="Start writing your note..."
