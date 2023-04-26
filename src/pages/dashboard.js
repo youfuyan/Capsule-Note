@@ -24,6 +24,9 @@ import {
   BsPlus,
   BsMoon,
   BsBoxArrowRight,
+  BsX,
+  BsSun,
+  BsMoonStars,
 } from 'react-icons/bs';
 // ...
 
@@ -273,9 +276,148 @@ const Dashboard = () => {
         </Navbar.Toggle>
         {/* If first name is not available, use email as name instead. */}
         <Navbar.Brand className={styles.navBarText}>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
+
+        <Navbar.Offcanvas
+          id="offcanvasNavbar"
+          aria-labelledby="offcanvasNavbarLabel"
+          placement="start"
+          className={`sideBar-${theme}`}
+          // className={styles.sideBar}
+        >
+          <Offcanvas.Header className="sideBarHeader" closeButton closeVariant={theme === "dark" ? 'white' : "black"}>
+              <Offcanvas.Title id="offcanvasNavbarLabel">
+                  
+              </Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body className={styles.sideBarBody}>
+            <div className={styles.sideMenu}>
+              
+              <span className={`categoriesText ${styles.categoriesText}`}>Categories</span>
+              <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+                {categories.map((category) => (
+                  <ListGroup.Item
+                    className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                    key={category._id}
+                  >
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <Link
+                        className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                        href={`/notes/${encodeURIComponent(category.name)}`}
+                      >
+                        {category.name}
+                      </Link>
+                      <Button
+                        className={`deleteButton ${styles.deleteButton}`}
+                        variant='danger'
+                        size='sm'
+                        onClick={() => handleDeleteCategory(category._id)}
+                      >
+                        
+                        <BsX/>
+                      </Button>
+                    </div>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+              <Form className={`${styles.newCategoryContainer} newCategoryContainer p-1`}>
+                <Form.Group className={styles.newCategoryForm}>
+                  <Form.Control
+                    type='text'
+                    value={newCategory}
+                    
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    placeholder='New category'
+                  />
+                </Form.Group>
+                <Button
+                  onClick={handleAddCategory}
+                  className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}
+                >
+                  <BsPlus/>
+                </Button>
+              </Form>
+
+              <div className={`p-1 d-flex justify-content-between ${styles.sideBarBottom}`}>
+                <div className={styles.userButton}>
+                  <UserButton />
+                </div>
+                <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={() => signOut()}>
+                  <BsBoxArrowRight />
+                </Button>
+                <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={handleToggleTheme}>
+                  {theme === 'dark' ? <BsSun/> : <BsMoonStars/>}
+                </Button>
+              </div>
+            </div>
+            
+          </Offcanvas.Body>
+        </Navbar.Offcanvas>
+
       </Navbar>
+      
       <div className='contentContainer' style={{ display: 'flex' }}>
-        <Offcanvas
+        <div className={`sideBar-${theme} ${styles.sideBarContainer}`}>
+          <div className={styles.sideMenuFixed}>
+              
+            <span className={`categoriesText ${styles.categoriesText}`}>Categories</span>
+            <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+              {categories.map((category) => (
+                <ListGroup.Item
+                  className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                  key={category._id}
+                >
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <Link
+                      className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                      href={`/notes/${encodeURIComponent(category.name)}`}
+                    >
+                      {category.name}
+                    </Link>
+                    <Button
+                      className={`deleteButton ${styles.deleteButton}`}
+                      variant='danger'
+                      size='sm'
+                      onClick={() => handleDeleteCategory(category._id)}
+                    >
+                      
+                      <BsX/>
+                    </Button>
+                  </div>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+            <Form className={`${styles.newCategoryContainerFixed} newCategoryContainer p-1`}>
+              <Form.Group className={styles.newCategoryForm}>
+                <Form.Control
+                  type='text'
+                  value={newCategory}
+                  
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder='New category'
+                />
+              </Form.Group>
+              <Button
+                onClick={handleAddCategory}
+                className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}
+              >
+                <BsPlus/>
+              </Button>
+            </Form>
+
+            <div className={`p-1 d-flex ${styles.sideBarBottomFixed}`}>
+              <div className={styles.userButton}>
+                <UserButton />
+              </div>
+              <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={() => signOut()}>
+                <BsBoxArrowRight />
+              </Button>
+              <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={handleToggleTheme}>
+                {theme === 'dark' ? <BsSun/> : <BsMoonStars/>}
+              </Button>
+            </div>
+          </div>
+        </div>
+        {/* <Offcanvas
           show={showLeftMenu}
           onHide={() => setShowLeftMenu(false)}
           placement='start'
@@ -340,7 +482,7 @@ const Dashboard = () => {
               </div>
             </div>
           </Offcanvas.Body>
-        </Offcanvas>
+        </Offcanvas> */}
         <div className={`${styles.mainContainer} mainContent`}>
           {/* Action buttons */}
 
