@@ -276,31 +276,7 @@
   width:1.5rem;
 }
 
-@media screen and (max-width: 1000px) {
-  .sideBarContainer {
-    display: none;
-  }
-  .addButton span{
-    display:none;
-  }
-  .filter span{
-    display:none;
-  }
-  .sort span{
-    display:none;
-  }
-  .container{
-    max-width: 100vw;
-  }
-  
-  .navBarToggle{
-    display:flex;
-  }
-  .navBar{
-    justify-content: space-between;
-  }
 
-}
 
 
   .deleteButton{
@@ -460,4 +436,35 @@
 .sideBar-light .sideBarBottomButton:hover,
 .sideBar-light .sideBarBottomButton:active{
   color:var(--gray6);
+}
+
+
+@media screen and (max-width: 1000px) {
+  .sideBarContainer {
+    display: none;
+  }
+  .addButton span{
+    display:none;
+  }
+  .filter span{
+    display:none;
+  }
+  .sort span{
+    display:none;
+  }
+  .container{
+    max-width: 100vw;
+  }
+  
+  .navBarToggle{
+    display:flex;
+  }
+  .navBar{
+    justify-content: space-between;
+  }
+  .deleteButton{
+    display:flex;
+  }
+ 
+
 }
