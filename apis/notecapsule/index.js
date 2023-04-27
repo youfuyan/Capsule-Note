@@ -140,13 +140,21 @@ async function getAllNotes(req, res) {
   conn.getMany("note", options).json(res);
 }
 
-async function handleDeleteImage(req,res){
-  let imageKitImages = [];
-  let notesContents = [];
+let contentImgsSource = [];
+let imagekitImgsSource = [];
 
-  let notes;
+async function handleDeleteImage(){
+  
+
   const conn = await Datastore.open();
-  const allNotes = conn.getMany("note").json(notes);
+  const stream = conn.getMany("note");
+  stream.on('data', (data) => {
+    const content = parse(data.content);
+    content.querySelectorAll('img').forEach((image) => {
+      console.log(image.getAttribute('src'));
+      contentImgsSource.push(image.getAttribute('src'));
+    })
+  });
 
   const imagekit = new ImageKit({
     publicKey : process.env.IMAGEKIT_PUBLIC_KEY,
@@ -154,27 +162,23 @@ async function handleDeleteImage(req,res){
     urlEndpoint : process.env.IMAGEKIT_URL_ENDPOINT
   });
 
-  console.log(notes);
-  // console.log("NOTES: " + allNotes.content);
   imagekit.listFiles({searchQuery: 'createdAt >= "2d"'}, function(error, result){
     if(error){
       console.log("Error: " + error);
     } else{
       result.forEach((data) => {
-        console.log(data.fileId);
-        console.log(data.url);
-        // let imageObj = {
-        //   id: data.fileId,
-        //   url: data.url
-        // }
-        // imageKitImages.push(imageObj);
+        const imgObj = {
+          fileId: data.fileId,
+          url: data.url
+        }
+        console.log(imgObj);
+        imagekitImgsSource.push(imgObj);
       })
-
     }
   })
   
-  
-  
+  console.log(contentImgsSource);
+  console.log(imagekitImgsSource);
 
 }
 app.job('* * * * *', handleDeleteImage);
