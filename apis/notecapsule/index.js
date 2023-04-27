@@ -140,11 +140,11 @@ async function getAllNotes(req, res) {
   conn.getMany("note", options).json(res);
 }
 
-let contentImgsSource = [];
-let imagekitImgsSource = [];
+
 
 async function handleDeleteImage(){
-  
+  let contentImgsSource = [];
+  let imagekitImgsSource = [];
 
   const conn = await Datastore.open();
   const stream = conn.getMany("note");

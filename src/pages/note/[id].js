@@ -14,7 +14,6 @@ import { Button } from "react-bootstrap";
 import { ArrowLeft } from "react-bootstrap-icons";
 import { getNote, updateNote } from "@/modules/Data";
 import styles from "@/styles/editor.module.css";
-import sanitizeHtml from 'sanitize-html';
 // Dynamic import for react-quill to prevent server-side rendering issues
 const ReactQuill = dynamic(
   async () => {
@@ -133,7 +132,7 @@ export default function Editor() {
           fileName: "abc.jpg",
         },
         function (err, result) {
-          const html = sanitizeHtml(content + `<img src=${result.url} alt="screenshot" />`)
+          const html = content + `<img src=${result.url} alt="screenshot" />`
           // console.log(result.url);
           setNoteContent(html);
           setCamera(false);
@@ -175,7 +174,7 @@ export default function Editor() {
         const fetchedNote = await getNote(token, id);
         setNote(fetchedNote);
         setNoteTitle(fetchedNote.title);
-        setNoteContent(sanitizeHtml(fetchedNote.content));
+        setNoteContent(fetchedNote.content);
       }
     }
     fetchNote();
@@ -279,7 +278,7 @@ export default function Editor() {
               className={styles.noteEditor}
               value={noteContent}
               onChange={(content, delta, source, editor) => {
-                setNoteContent(sanitizeHtml(content));
+                setNoteContent(content);
               }}
               modules={modules}
               placeholder="Start writing your note..."
