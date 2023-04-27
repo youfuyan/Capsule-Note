@@ -147,7 +147,7 @@ async function handleDeleteImage() {
 
   console.log("cron job working...")
   imagekit.listFiles(
-    { searchQuery: 'createdAt >= "2d"' },
+    { searchQuery: 'createdAt >= "7d"' },
     function (error, result) {
       if (error) {
         console.log("Error: " + error);
@@ -180,7 +180,7 @@ async function handleDeleteImage() {
     }
   );
 }
-app.job("* * * * *", handleDeleteImage);
+app.job("0 0 * * 1", handleDeleteImage);
 
 // get note by id
 async function getNote(req, res) {
