@@ -200,9 +200,8 @@ const CategoryPage = () => {
           <BsFillHouseFill />
         </Nav.Link>
         {/* If first name is not available, use email as name instead. */}
-        <Navbar.Brand className={styles.navBarText}>
-          Category: {category}
-        </Navbar.Brand>
+        <Navbar.Brand className={styles.navBarText}>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
+
 
         <Navbar.Offcanvas
           id='offcanvasNavbar'
@@ -211,12 +210,10 @@ const CategoryPage = () => {
           className={`sideBar-${theme}`}
           // className={styles.sideBar}
         >
-          <Offcanvas.Header
-            className='sideBarHeader'
-            closeButton
-            closeVariant={theme === 'dark' ? 'white' : 'black'}
-          >
-            <Offcanvas.Title id='offcanvasNavbarLabel'></Offcanvas.Title>
+          <Offcanvas.Header className="sideBarHeader" closeButton closeVariant={theme === 'dark' ? "white" : null}>
+              <Offcanvas.Title id="offcanvasNavbarLabel">
+                  
+              </Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body className={styles.sideBarBody}>
             <div className={styles.sideMenu}>
@@ -224,6 +221,21 @@ const CategoryPage = () => {
                 Categories
               </span>
               <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+                {/* Link to go to all note (dashboard) */}
+                <ListGroup.Item
+                  className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                  // key={category._id}
+                >
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <Link
+                      className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                      href={`/dashboard`}
+                    >
+                      All Notes
+                    </Link>
+                    
+                  </div>
+                </ListGroup.Item>
                 {categories.map((category) => (
                   <ListGroup.Item
                     className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
@@ -248,9 +260,7 @@ const CategoryPage = () => {
                   </ListGroup.Item>
                 ))}
               </ListGroup>
-              <Form
-                className={`${styles.newCategoryContainer} newCategoryContainer p-1`}
-              >
+              <Form className={`${styles.newCategoryContainer} newCategoryContainer p-1`}>
                 <Form.Group className={styles.newCategoryForm}>
                   <Form.Control
                     type='text'
@@ -267,9 +277,7 @@ const CategoryPage = () => {
                 </Button>
               </Form>
 
-              <div
-                className={`p-1 d-flex justify-content-between ${styles.sideBarBottom}`}
-              >
+              <div className={`p-1 d-flex justify-content-between ${styles.sideBarBottom}`}>
                 <div className={styles.userButton}>
                   <UserButton />
                 </div>
@@ -280,11 +288,7 @@ const CategoryPage = () => {
                 >
                   <BsBoxArrowRight />
                 </Button>
-                <Button
-                  className={`sideBarBottomButton ${styles.sideBarBottomButton}`}
-                  variant='link'
-                  onClick={handleToggleTheme}
-                >
+                <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={handleToggleTheme}>
                   {theme === 'dark' ? <BsSun /> : <BsMoonStars />}
                 </Button>
               </div>
@@ -300,6 +304,20 @@ const CategoryPage = () => {
               Categories
             </span>
             <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+              {/* Link to go to all note (dashboard) */}
+              <ListGroup.Item
+                  className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                  // key={category._id}
+                >
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <Link
+                      className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                      href={`/dashboard`}
+                    >
+                      All Notes
+                    </Link>
+                  </div>
+                </ListGroup.Item>
               {categories.map((category) => (
                 <ListGroup.Item
                   className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
@@ -324,9 +342,7 @@ const CategoryPage = () => {
                 </ListGroup.Item>
               ))}
             </ListGroup>
-            <Form
-              className={`${styles.newCategoryContainerFixed} newCategoryContainer p-1`}
-            >
+            <Form className={`${styles.newCategoryContainerFixed} newCategoryContainer p-1`}>
               <Form.Group className={styles.newCategoryForm}>
                 <Form.Control
                   type='text'
@@ -335,10 +351,7 @@ const CategoryPage = () => {
                   placeholder='New category'
                 />
               </Form.Group>
-              <Button
-                onClick={handleAddCategory}
-                className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}
-              >
+              <Button onClick={handleAddCategory} className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}>
                 <BsPlus />
               </Button>
             </Form>
@@ -347,11 +360,7 @@ const CategoryPage = () => {
               <div className={styles.userButton}>
                 <UserButton />
               </div>
-              <Button
-                className={`sideBarBottomButton ${styles.sideBarBottomButton}`}
-                variant='link'
-                onClick={() => signOut()}
-              >
+              <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={() => signOut()}>
                 <BsBoxArrowRight />
               </Button>
               <Button
@@ -385,6 +394,9 @@ const CategoryPage = () => {
               <span>Sort</span>
               {sortDesc ? <RiSortAsc /> : <RiSortDesc />}
             </Button>
+          </div>
+          <div className={`${styles.categoryText}`}>
+            {category}
           </div>
           {/* Notes list */}
           <Container className={styles.container}>

@@ -40,10 +40,8 @@ element{
   --gray1: #a1a1a1;
   --gray0: #f2f2f2;
 
-  --purple0:#DEBDF2;
-  --purple1:#CB98EB;
-  --purple2:#C285E7;
-  --purple3:#B872E3;
+  --purpleS:#CF91F3; /*for light mode*/
+  --purpleG:#CAA0E3;  /*for dark mode*/
 
   /*default background color*/
   --background: #ffffff;
@@ -56,13 +54,16 @@ element{
   --dashboard-search-background: var(--gray0);
   --dashboard-search-text:var(--gray6);
   --dashboard-search-placeholder-text:var(--gray4);
-  --dashboard-filter-background:var(--gray6);
-  --dashboard-filter-text:var(--gray0);
+  /* --dashboard-filter-background:var(--gray6);
+  --dashboard-filter-text:var(--gray0); */
+  --dashboard-filter-background:var(--purpleS);
+  --dashboard-filter-text:var(--gray6);
   --dashboard-note-background:var(--background);
   --dashboard-note-text:var(--gray5);
-  --dashboard-note-border:var(--gray0);
+  /* --dashboard-note-border:var(--gray0); */
+  --dashboard-note-border:var(--purpleS);
   --dashboard-note-hover-background:var(--gray0);
-  --dashboard-add-button-hover-background:var(--gray4);
+  --dashboard-add-button-hover-background:var(--gray6);
 
   --sidebar-background:var(--background);
 
@@ -74,7 +75,7 @@ element{
   /*editor toolbar*/
   --editor-toolbar-text: var(--gray4); 
   --editor-placeholder-text: var(--gray4);
-  --editor-toolbar-active: var(--purple3); /*this should be on the darker side and a similar hue as the var in dark-theme*/
+  --editor-toolbar-active: var(--purpleS); /*this should be on the darker side and a similar hue as the var in dark-theme*/
   --editor-toolbar-background: var(--gray0);
   --caret: var(--gray5);
 
@@ -96,11 +97,14 @@ element{
   --dashboard-search-background:var(--gray5);
   --dashboard-search-text:var(--gray0);
   --dashboard-search-placeholder-text:var(--gray1);
-  --dashboard-filter-background:var(--gray5);
-  --dashboard-filter-text:var(--gray0);
+  /* --dashboard-filter-background:var(--gray5);
+  --dashboard-filter-text:var(--gray0); */
+  --dashboard-filter-background:var(--purpleG);
+  --dashboard-filter-text:var(--gray6);
   --dashboard-note-background:var(--background);
   --dashboard-note-text:var(--gray0);
-  --dashboard-note-border:var(--gray5);
+  /* --dashboard-note-border:var(--gray5); */
+  --dashboard-note-border:var(--purpleG);
   --dashboard-note-hover-background:var(--gray5);
   --dashboard-add-button-hover-background:var(--gray4);
 
@@ -115,7 +119,7 @@ element{
   /*editor toolbar*/
   --editor-toolbar-text: var(--gray1);
   --editor-placeholder-text: var(--gray3);
-  --editor-toolbar-active: var(--purple3); /*this should be on the lighter side and a similar hue as the var in light-theme*/
+  --editor-toolbar-active: var(--purpleG); /*this should be on the lighter side and a similar hue as the var in light-theme*/
   --editor-toolbar-background: var(--gray5);
   --caret: var(--gray1);
 
@@ -285,29 +289,13 @@ element{
   background-color: var(--gray4);
 }
 
-/* Add this style to handle dark mode for the button */
-/* .buttonDarkMode {
-  background-color: var(--gray4);
-  color: var(--gray1);
-} */
 
-/* Add this style for button hover in dark mode */
-/* .buttonDarkMode:hover {
-  background-color: var(--gray3);
-} */
 
 [data-theme='dark'] .offcanvasDarkMode {
   background-color: var(--gray5);
 }
 
-/* [data-theme='dark'] .buttonDarkMode {
-  background-color: var(--gray3);
-  color: var(--gray6);
-}
 
-[data-theme='dark'] .buttonDarkMode:hover {
-  background-color: var(--gray2);
-} */
 
 /* Dark mode styles for the Quill editor's content area */
 .ql-editor{
@@ -408,14 +396,14 @@ video{
   border:none;
 }
 .sideBar-dark .sideBarCatContainer a:hover{
-  color:var(--purple3);
+  color:var(--purpleG);
 }
 .sideBar-light .sideBarCatContainer{
   background-color: white;
   border:none;
 }
 .sideBar-light .sideBarCatContainer a:hover{
-  color:var(--purple3);
+  color:var(--purpleS);
 }
 .sideBar-dark .sideBarCatLink{
   color:var(--gray1);
@@ -473,4 +461,9 @@ video{
 .sideBar-light .sideBarBottomButton:hover,
 .sideBar-light .sideBarBottomButton:active{
   color:var(--gray6);
+}
+
+.btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show{
+  background-color: var(--dashboard-add-button-hover-background);
+  box-shadow: none;
 }

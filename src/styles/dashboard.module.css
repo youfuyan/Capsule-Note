@@ -35,6 +35,9 @@
   flex-direction: row;
   height:100%;
 }
+.filter button:hover{
+  background-color: var(--dashboard-add-button-hover-background);
+}
 
 .filter span{
   padding-right: 0.4em;
@@ -52,10 +55,19 @@
   height:auto;
 
 }
+.sort:hover{
+  background-color: var(--dashboard-add-button-hover-background);
+}
 .sort span{
   padding-right: 0.4em;
   display:inline;
   padding-bottom: 0.2em;
+}
+
+.categoryText{
+  padding:0 2em 0.5em;
+  color:var(--caret);
+  font-weight: bold;
 }
 
 .container{
@@ -89,14 +101,14 @@
   
 }
 .noteLink:hover{
-  color:var(--purple3);
+  color:var(--dashboard-filter-background);
 }
 
 .dropdownList {
   color:var(--dashboard-note-text);
 }
 .dropdownList:hover {
-  color:var(--purple3);
+  color:var(--dashboard-filter-background);
 }
 
 .addButton{
@@ -110,12 +122,15 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  color:var(--dashboard-header-text);
-  background-color: var(--dashboard-header-background);
+  color:var(--dashboard-filter-text);
+  background-color: var(--dashboard-filter-background);
   border:none;
 }
-.addButton:hover{
+.addButton:hover,
+.addButton:active,
+.addButton:focus-visible{
   background-color: var(--dashboard-add-button-hover-background);
+  box-shadow: none;
 }
 .addButton svg{
   height:1.5rem;
@@ -140,12 +155,7 @@
   position: sticky;
   top:0;
   z-index: 1;
-  /* position: absolute;
-  top:0px;
-  left:0px;
-  width: 100%; */
-  
-  /* box-shadow: 0 1px 10px 0 rgba(0,0,0,.1); */
+ 
 }
 .navBarToggle{
   color:var(--dashboard-header-text);
@@ -167,15 +177,12 @@
 .sideBarContainer {
   display: block;
   width: 20vw;
-  border-right:var(--dashboard-search-background) 2px solid;
+  border-right:var(--dashboard-note-border) 2px solid;
   position: sticky;
   top: 56px;
   height: calc(100vh - 56px);
   overflow: scroll;
-  /* position: absolute;
-  top:56px;
-  left:0px;
-  height:100% */
+ 
 }
 
 .sideBarBody{
@@ -371,14 +378,14 @@
   border:none;
 }
 .sideBar-dark .sideBarCatContainer a:hover{
-  color:var(--purple3);
+  color:var(--purpleG);
 }
 .sideBar-light .sideBarCatContainer{
   background-color: white;
   border:none;
 }
 .sideBar-light .sideBarCatContainer a:hover{
-  color:var(--purple3);
+  color:var(--purpleS);
 }
 .sideBar-dark .sideBarCatLink{
   color:var(--gray1);
@@ -441,7 +448,9 @@
 
 @media screen and (max-width: 1000px) {
   .sideBarContainer {
-    display: none;
+    /* display: none; */
+    width: 0vw;
+    border:none
   }
   .addButton span{
     display:none;

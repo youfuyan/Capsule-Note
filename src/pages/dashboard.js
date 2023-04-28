@@ -27,6 +27,7 @@ import {
   BsX,
   BsSun,
   BsMoonStars,
+  BsFillArrowLeftCircleFill,
 } from 'react-icons/bs';
 // ...
 
@@ -274,6 +275,7 @@ const Dashboard = () => {
         >
           <BsList />
         </Navbar.Toggle>
+        
         {/* If first name is not available, use email as name instead. */}
         <Navbar.Brand className={styles.navBarText}>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
 
@@ -284,7 +286,7 @@ const Dashboard = () => {
           className={`sideBar-${theme}`}
           // className={styles.sideBar}
         >
-          <Offcanvas.Header className="sideBarHeader" closeButton closeVariant={theme === "dark" ? 'white' : "black"}>
+          <Offcanvas.Header className="sideBarHeader" closeButton closeVariant={theme === 'dark' ? "white" : null}>
               <Offcanvas.Title id="offcanvasNavbarLabel">
                   
               </Offcanvas.Title>
@@ -292,8 +294,25 @@ const Dashboard = () => {
           <Offcanvas.Body className={styles.sideBarBody}>
             <div className={styles.sideMenu}>
               
-              <span className={`categoriesText ${styles.categoriesText}`}>Categories</span>
+              <span className={`categoriesText ${styles.categoriesText}`}>
+                Categories
+              </span>
               <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+                {/* Link to go to all note (dashboard) */}
+                <ListGroup.Item
+                    className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                    // key={category._id}
+                  >
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <Link
+                        className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                        href={`/dashboard`}
+                      >
+                        All Notes
+                      </Link>
+                      
+                    </div>
+                  </ListGroup.Item>
                 {categories.map((category) => (
                   <ListGroup.Item
                     className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
@@ -324,7 +343,6 @@ const Dashboard = () => {
                   <Form.Control
                     type='text'
                     value={newCategory}
-                    
                     onChange={(e) => setNewCategory(e.target.value)}
                     placeholder='New category'
                   />
@@ -352,15 +370,29 @@ const Dashboard = () => {
             
           </Offcanvas.Body>
         </Navbar.Offcanvas>
-
       </Navbar>
       
       <div className='contentContainer' style={{ display: 'flex' }}>
         <div className={`sideBar-${theme} ${styles.sideBarContainer}`}>
           <div className={styles.sideMenuFixed}>
-              
-            <span className={`categoriesText ${styles.categoriesText}`}>Categories</span>
+            <span className={`categoriesText ${styles.categoriesText}`}>
+              Categories
+            </span>
             <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+              {/* Link to go to all note (dashboard) */}
+              <ListGroup.Item
+                className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                // key={category._id}
+              >
+                <div className='d-flex justify-content-between align-items-center'>
+                  <Link
+                    className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                    href={`/dashboard`}
+                  >
+                    All Notes
+                  </Link>
+                </div>
+              </ListGroup.Item>
               {categories.map((category) => (
                 <ListGroup.Item
                   className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
@@ -379,7 +411,6 @@ const Dashboard = () => {
                       size='sm'
                       onClick={() => handleDeleteCategory(category._id)}
                     >
-                      
                       <BsX/>
                     </Button>
                   </div>
@@ -391,15 +422,11 @@ const Dashboard = () => {
                 <Form.Control
                   type='text'
                   value={newCategory}
-                  
                   onChange={(e) => setNewCategory(e.target.value)}
                   placeholder='New category'
                 />
               </Form.Group>
-              <Button
-                onClick={handleAddCategory}
-                className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}
-              >
+              <Button onClick={handleAddCategory} className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}>
                 <BsPlus/>
               </Button>
             </Form>
@@ -456,6 +483,9 @@ const Dashboard = () => {
               <span>Sort</span>
               {sortDesc ? <RiSortAsc /> : <RiSortDesc />}
             </Button>
+          </div>
+          <div className={`${styles.categoryText}`}>
+            All Notes
           </div>
           {/* Notes list */}
           <Container className={styles.container}>
