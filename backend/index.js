@@ -94,19 +94,6 @@ app.use("/categories", (req, res, next) => {
   next();
 });
 
-// get notes by category
-async function authByImageKit(req, res) {
-  try {
-    const authenticationParameters = imagekit.getAuthenticationParameters();
-    console.log(authenticationParameters);
-    res.status(200);
-    res.json(authenticationParameters);
-  } catch (error) {
-    res.status(400);
-    res.json(error).end();
-  }
-}
-
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
 
 // search the note table by keyword
@@ -140,45 +127,6 @@ async function getAllNotes(req, res) {
   };
   conn.getMany("note", options).json(res);
 }
-
-async function handleDeleteImage() {
-  const conn = await Datastore.open();
-
-  console.log("cron job working...");
-  imagekit.listFiles(
-    { searchQuery: 'createdAt >= "7d"' },
-    function (error, result) {
-      if (error) {
-        console.log("Error: " + error);
-      } else {
-        result.forEach((imagekitImg) => {
-          let imageExists = null;
-          const stream = conn.getMany("note");
-          stream
-            .on("data", (data) => {
-              const content = parse(data.content);
-              content.querySelectorAll("img").every((databaseImg) => {
-                const databaseImgUrl = databaseImg.getAttribute("src");
-                if (imagekitImg.url === databaseImgUrl) {
-                  console.log("image does exist!");
-                  imageExists = true;
-                  return false;
-                }
-                return true;
-              });
-            })
-            .on("end", () => {
-              if (imageExists === null) {
-                console.log("does not exist!");
-                imagekit.deleteFile(imagekitImg.fileId);
-              }
-            });
-        });
-      }
-    }
-  );
-}
-app.job("0 0 * * 1", handleDeleteImage);
 
 // get note by id
 async function getNote(req, res) {
@@ -309,17 +257,56 @@ async function uploadImg(req, res) {
       if (result) {
         res.json(result);
       }
-      res.json(err);
+      else{
+        res.json(err);
+      }
     }
   );
 }
 
-app.post("/uploadImg", uploadImg);
+async function handleDeleteImage() {
+  const conn = await Datastore.open();
 
+  console.log("cron job working...");
+  imagekit.listFiles(
+    { searchQuery: 'createdAt >= "7d"' },
+    function (error, result) {
+      if (error) {
+        console.log("Error: " + error);
+      } else {
+        result.forEach((imagekitImg) => {
+          let imageExists = null;
+          const stream = conn.getMany("note");
+          stream
+            .on("data", (data) => {
+              const content = parse(data.content);
+              content.querySelectorAll("img").every((databaseImg) => {
+                const databaseImgUrl = databaseImg.getAttribute("src");
+                if (imagekitImg.url === databaseImgUrl) {
+                  console.log("image does exist!");
+                  imageExists = true;
+                  return false;
+                }
+                return true;
+              });
+            })
+            .on("end", () => {
+              if (imageExists === null) {
+                console.log("does not exist!");
+                imagekit.deleteFile(imagekitImg.fileId);
+              }
+            });
+        });
+      }
+    }
+  );
+}
+app.job("0 0 * * 1", handleDeleteImage);
+
+app.post("/uploadImg", uploadImg);
 app.get("/categories", getAllCats); // get all notes under curr user
 app.get("/categories/:id", getCat); // get a note by note _id
 app.put("/categories/:id", editCat); // update note by _id with new json
-app.get("/auth", authByImageKit); // get all notes under curr user
 // app.post("/categories", createCat);  // add a new note to curr user
 
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
