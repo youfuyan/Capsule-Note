@@ -194,6 +194,7 @@ export default function Editor() {
         content: noteContent,
         category: note.category,
         userId: userId,
+        createdOn: new Date().toISOString()
       };
 
       await updateNote(jwt, id, modifiedNote);
