@@ -4,26 +4,18 @@ import { crudlify } from "codehooks-crudlify";
 import jwtDecode from "jwt-decode";
 import * as Yup from "yup";
 import { parse } from "node-html-parser";
+import ImageKit from "imagekit";
 
 // for imagekit autheticationEndpoint
-var ImageKit = require("imagekit");
-var fs = require("fs");
 
-// get notes by category
-async function authByImageKit(req, res) {
-  var imagekit = new ImageKit({
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-    privateKey: process.env.IMAGEKIT_PRIVATE_KET,
-    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
-  });
-
-  var authenticationParameters = imagekit.getAuthenticationParameters();
-  console.log(authenticationParameters);
-
-  res.json(authenticationParameters);
-}
-
-app.get("/auth", authByImageKit); // get all notes under curr user
+const publicKey = process.env.IMAGEKIT_PUBLIC_KEY;
+const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+const urlEndpoint = process.env.IMAGEKIT_URL_ENDPOINT;
+const imagekit = new ImageKit({
+  publicKey: publicKey,
+  privateKey: privateKey,
+  urlEndpoint: urlEndpoint
+});
 
 // Define the schema for a Todo object using Yup
 const noteSchema = Yup.object({
@@ -102,6 +94,19 @@ app.use("/categories", (req, res, next) => {
   next();
 });
 
+// get notes by category
+async function authByImageKit(req, res) {
+  try {
+    const authenticationParameters = imagekit.getAuthenticationParameters();
+    console.log(authenticationParameters);
+    res.status(200);
+    res.json(authenticationParameters);
+  } catch (error) {
+    res.status(400);
+    res.json(error).end();
+  }
+}
+
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
 
 // search the note table by keyword
@@ -138,14 +143,8 @@ async function getAllNotes(req, res) {
 
 async function handleDeleteImage() {
   const conn = await Datastore.open();
-  
-  const imagekit = new ImageKit({
-    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-    privateKey: process.env.IMAGEKIT_PRIVATE_KET,
-    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
-  });
 
-  console.log("cron job working...")
+  console.log("cron job working...");
   imagekit.listFiles(
     { searchQuery: 'createdAt >= "7d"' },
     function (error, result) {
@@ -155,26 +154,25 @@ async function handleDeleteImage() {
         result.forEach((imagekitImg) => {
           let imageExists = null;
           const stream = conn.getMany("note");
-          stream.on("data", (data) => {
-            const content = parse(data.content);
-            content.querySelectorAll("img").every((databaseImg) => {
-              const databaseImgUrl = databaseImg.getAttribute("src");
-              if(imagekitImg.url === databaseImgUrl){
-                console.log("image does exist!");
-                imageExists = true;
-                return false;
+          stream
+            .on("data", (data) => {
+              const content = parse(data.content);
+              content.querySelectorAll("img").every((databaseImg) => {
+                const databaseImgUrl = databaseImg.getAttribute("src");
+                if (imagekitImg.url === databaseImgUrl) {
+                  console.log("image does exist!");
+                  imageExists = true;
+                  return false;
+                }
+                return true;
+              });
+            })
+            .on("end", () => {
+              if (imageExists === null) {
+                console.log("does not exist!");
+                imagekit.deleteFile(imagekitImg.fileId);
               }
-              return true;
             });
-          }).on('end', () => {
-            if(imageExists === null){
-              console.log("does not exist!");
-              imagekit.deleteFile(imagekitImg.fileId);
-            }
-            
-          });
-
-          
         });
       }
     }
@@ -222,21 +220,6 @@ async function editNote(req, res) {
   }
 }
 
-// has req.body.userId already inserted, don't have to pass userId
-// {
-//   "title": "local note 4",
-//   "content": "new content for note 4",
-//   "category": "health"
-// }
-// async function createNote(req, res) {
-//   const conn = await Datastore.open();
-//   req.body.createdOn = new Date();
-//   const data = conn.insertOne("note", req.body);
-//   console.log(JSON.stringify(data));
-//   res.status(201).json(req.body);
-//   // console.log(res.json());
-// }
-
 async function getNotesSortedByDate(req, res) {
   const userId = req.user_token.sub;
   const sortByDesc = req.params.sortByDesc === "true";
@@ -263,7 +246,6 @@ app.get("/note", getAllNotes); // get all notes under curr user
 app.get("/note/:id", getNote); // get a note by note _id
 app.get("/note/category/:cat", getNoteByCat);
 app.put("/note/:id", editNote); // update note by _id with new json
-// app.post("/note", createNote);  // add a new note to curr user
 app.get("/note/sortByDesc/:sortByDesc", getNotesSortedByDate);
 app.get("/note/getAllSearchNotes/:searchInput", getSearchRes);
 
@@ -317,22 +299,27 @@ async function editCat(req, res) {
   }
 }
 
-// has req.body.userId already inserted, don't have to pass userId
-// {
-//   "name": "local note 4",
-// }
-// async function createCat(req, res) {
-//   const conn = await Datastore.open();
-//   req.body.createdOn = new Date();
-//   const data = conn.insertOne("categories", req.body);
-//   console.log("data is", data);
-//   res.status(201).json(data);
-//   // console.log("res is", res.json());
-// }
+async function uploadImg(req, res) {
+  imagekit.upload(
+    {
+      file: req.body.file,
+      fileName: "abc.jpg",
+    },
+    function (err, result) {
+      if (result) {
+        res.json(result);
+      }
+      res.json(err);
+    }
+  );
+}
+
+app.post("/uploadImg", uploadImg);
 
 app.get("/categories", getAllCats); // get all notes under curr user
 app.get("/categories/:id", getCat); // get a note by note _id
 app.put("/categories/:id", editCat); // update note by _id with new json
+app.get("/auth", authByImageKit); // get all notes under curr user
 // app.post("/categories", createCat);  // add a new note to curr user
 
 // Make REST API CRUD operations for the "notes" collection with the Yup schema

@@ -106,6 +106,23 @@ const Dashboard = () => {
     generatePdfHTML(title, content);
   };
 
+  const handleCopy = async (title, content, category) => {
+
+    // copy the note's category
+    const copiedNote = {
+      title: title,
+      content: content,
+      category: category,
+      userId: userId
+    };
+
+    const token = await getToken({ template: 'codehooks' });
+    await addNote(token, copiedNote);
+
+    // Refresh the notes list based on the selected category
+    const fetchedNotes = await getNotes(token);
+    setNotes(fetchedNotes);
+  }
 
   const handleAddCategory = async () => {
     if (newCategory && newCategory.trim()) {
@@ -521,7 +538,9 @@ const Dashboard = () => {
                           Move to Category
                         </Dropdown.Item>
                         <Dropdown.Item onClick={() => generatePdf(note.title, note.content)} href='#/action-2'>Export</Dropdown.Item>
-                        <Dropdown.Item href='#/action-3'>Copy</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleCopy(note.title, note.content, note.category)} href='#'>Copy</Dropdown.Item>
+
+                        {/* <Dropdown.Item href='/dashboard'>Copy</Dropdown.Item> */}
                         <Dropdown.Item
                           onClick={() => handleDeleteNote(note._id)}
                         >

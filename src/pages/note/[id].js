@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useAuth, SignInButton } from "@clerk/nextjs";
 import { Button, Modal } from "react-bootstrap";
 import { ArrowLeft } from "react-bootstrap-icons";
-import { getNote, updateNote } from "@/modules/Data";
+import { getNote, updateNote, uploadImg } from "@/modules/Data";
 import styles from "@/styles/editor.module.css";
 import Loading from "@/components/Loading"
 import {BsCameraFill} from 'react-icons/bs';
@@ -51,16 +51,16 @@ export default function Editor() {
   const webcamRef = useRef(null);
   const quillObj = useRef(false);
 
-  const publicKey = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY;
-  const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT;
-  const authenticationEndpoint =
-    process.env.NEXT_PUBLIC_BACKEND_BASE_URL + "/auth";
+  const uploadImgToImageKit = async (file) => {
+    const body = {
+      file: file,
+    };
+    const token = await getToken({ template: "codehooks" });
 
-  const imagekit = new IKCore({
-    publicKey: publicKey,
-    urlEndpoint: urlEndpoint,
-    authenticationEndpoint: authenticationEndpoint,
-  });
+    const result = await uploadImg(token, body);
+
+    return result;
+  };
 
   const videoConstraints = {
     width: 360,
@@ -87,19 +87,14 @@ export default function Editor() {
 
     input.onchange = async () => {
       const file = await convertToBase64(input.files[0]);
-      imagekit.upload(
-        {
-          file: file,
-          fileName: "abc.jpg",
-        },
-        function (err, result) {
-          const range = quillObj.current.getEditorSelection();
+      uploadImgToImageKit(file).then((result) => {
+        console.log(result);
+        const range = quillObj.current.getEditorSelection();
 
-          quillObj.current
-            .getEditor()
-            .insertEmbed(range.index, "image", result.url);
-        }
-      );
+        quillObj.current
+          .getEditor()
+          .insertEmbed(range.index, "image", result.url);
+      });
     };
   };
 
@@ -130,18 +125,12 @@ export default function Editor() {
     async (content) => {
       const imageSrc = webcamRef.current.getScreenshot();
 
-      imagekit.upload(
-        {
-          file: imageSrc,
-          fileName: "abc.jpg",
-        },
-        function (err, result) {
-          const html = content + `<img src=${result.url} alt="screenshot" />`
-          // console.log(result.url);
-          setNoteContent(html);
-          setCamera(false);
-        }
-      );
+      uploadImgToImageKit(imageSrc).then((result) => {
+        const html = content + `<img src=${result.url} alt="screenshot" />`;
+        // console.log(result.url);
+        setNoteContent(html);
+        setCamera(false);
+      });
     },
     [webcamRef]
   );
