@@ -1,4 +1,4 @@
-const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL_LOCAL;
+const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 //*********** GET REQUESTS ***********//
 
