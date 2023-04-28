@@ -107,10 +107,10 @@ const Dashboard = () => {
   };
 
   const handleCopy = async (title, content, category) => {
-
+    const newTitle = title + " copy"
     // copy the note's category
     const copiedNote = {
-      title: title,
+      title: newTitle,
       content: content,
       category: category,
       userId: userId
