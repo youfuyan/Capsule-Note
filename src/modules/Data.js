@@ -326,3 +326,23 @@ export async function updateCat(authToken, id, modifiedCat) {
     throw error;
   }
 }
+
+// file is base64 string format
+export async function uploadImg(authToken, file) {
+  const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json', // Ensure the Content-Type header is set
+      Authorization: `Bearer ${authToken}`, // Add the JWT token to the request header
+    },
+    body: JSON.stringify(file),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error('Error adding new image to imagekit:', errorData);
+    throw new Error('Failed to adding new image to imagekit');
+  }
+
+  return await response.json();
+}
