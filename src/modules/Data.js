@@ -4,7 +4,6 @@ const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 // get all notes of the current user
 export async function getNotes(authToken) {
-  // console.log(authToken);
   const result = await fetch(`${backend_base}/note`, {
     method: "GET",
     headers: {
