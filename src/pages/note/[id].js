@@ -10,10 +10,12 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useAuth, SignInButton } from "@clerk/nextjs";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { ArrowLeft } from "react-bootstrap-icons";
 import { getNote, updateNote, uploadImg } from "@/modules/Data";
 import styles from "@/styles/editor.module.css";
+import Loading from "@/components/Loading"
+import {BsCameraFill} from 'react-icons/bs';
 // Dynamic import for react-quill to prevent server-side rendering issues
 const ReactQuill = dynamic(
   async () => {
@@ -37,13 +39,15 @@ export default function Editor() {
   const [updatedContent, setUpdatedContent] = useState("");
   // State to track auto-save status
   const [isSaved, setIsSaved] = useState(false);
+  // State of showing webcam modal
+  const [showWebcamModal, setShowWebcamModal] = useState(false);
 
   // Use the useRouter hook to programmatically navigate back to the dashboard
   const router = useRouter();
   const { id } = router.query;
   const { isLoaded, userId, sessionId, getToken } = useAuth();
   const [jwt, setJwt] = useState("");
-  const [camera, setCamera] = useState(false);
+  // const [camera, setCamera] = useState(false);
   const webcamRef = useRef(null);
   const quillObj = useRef(false);
 
@@ -205,13 +209,46 @@ export default function Editor() {
   };
 
   if (!note) {
-    return <div>Loading...</div>;
+    // return <div>Loading...</div>;
+    return <Loading/>;
   }
   return (
     <div>
       {/* Check if the user is signed in before rendering the content */}
       {userId ? (
         <div className={styles.pageContainer}>
+          {/* Webcam Modal */}
+          <Modal
+            dialogClassName="webcamModal"
+            size="lg"
+            show={showWebcamModal}
+            onHide={() => setShowWebcamModal(false)}
+            aria-labelledby="example-modal-sizes-title-lg"
+          >
+            <Modal.Header closeButton closeVariant="white">
+              <Modal.Title id="example-modal-sizes-title-lg">
+                
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className={styles.webcam}>
+                  {(
+                    <>
+                      <Webcam
+                        audio={false}
+                        height={400}
+                        width={400}
+                        ref={webcamRef}
+                        screenshotFormat="image/jpeg"
+                        mirrored={false}
+                        videoConstraints={videoConstraints}
+                      />
+                      <Button className={styles.webcamButton} onClick={() => capture(noteContent)}>Take Photo</Button>
+                    </>
+                  )}
+                </div>
+            </Modal.Body>
+          </Modal>
           {/* Top bar */}
           <div className={styles.topBar}>
             {/* Left button: Go back to dashboard */}
@@ -230,38 +267,23 @@ export default function Editor() {
               {isSaved ? "Saved" : "Saving..."}
             </div>
           </div>
-          <div className="Webcam">
-            {camera ? (
-              <>
-                <Webcam
-                  audio={false}
-                  height={400}
-                  width={400}
-                  ref={webcamRef}
-                  screenshotFormat="image/jpeg"
-                  mirrored={false}
-                  videoConstraints={videoConstraints}
-                />
-                <button onClick={() => capture(noteContent)}>
-                  Capture photo
-                </button>
-              </>
-            ) : (
-              <button onClick={() => setCamera(true)}>
-                Insert photo by camera
-              </button>
-            )}
-          </div>
+          
+          
           <div className={styles.editorContainer}>
-            {/* Title input (editable) */}
-            <input
-              className={styles.noteTitleInput}
-              type="text"
-              value={noteTitle}
-              onChange={(e) => setNoteTitle(e.target.value)}
-              placeholder="Note Title"
-            />
-
+            <div className={styles.titleContainer}>
+              {/* Title input (editable) */}
+              <input
+                className={styles.noteTitleInput}
+                type="text"
+                value={noteTitle}
+                onChange={(e) => setNoteTitle(e.target.value)}
+                placeholder="Note Title"
+              />
+              {/* Camera button */}
+              <button className={styles.cameraButton} onClick={() => setShowWebcamModal(true)}>
+                <BsCameraFill/>
+              </button> 
+            </div>
             {/* Note Editor */}
             <ReactQuill
               forwardedRef={quillObj}

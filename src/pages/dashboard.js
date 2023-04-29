@@ -24,6 +24,10 @@ import {
   BsPlus,
   BsMoon,
   BsBoxArrowRight,
+  BsX,
+  BsSun,
+  BsMoonStars,
+  BsFillArrowLeftCircleFill,
 } from 'react-icons/bs';
 // ...
 
@@ -255,94 +259,196 @@ const Dashboard = () => {
   }, [selectedCategory]);
 
   return (
-    <>
+    <div className={styles.dashboardContainer}>
       <Navbar
         expand={false}
-        variant='dark'
-        style={{
-          backgroundColor: theme === 'dark' ? 'var(--gray5)' : '#808080',
-        }}
+        // variant='dark'
+        // style={{
+        //   backgroundColor: theme === 'dark' ? 'var(--gray5)' : '#808080',
+        // }}
+        className={styles.navBar}
       >
         <Navbar.Toggle
           aria-controls='category-section'
           onClick={() => setShowLeftMenu(!showLeftMenu)}
+          className={styles.navBarToggle}
         >
           <BsList />
         </Navbar.Toggle>
+        
         {/* If first name is not available, use email as name instead. */}
-        <Navbar.Brand>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
-      </Navbar>
-      <div className='contentContainer' style={{ display: 'flex' }}>
-        <Offcanvas
-          show={showLeftMenu}
-          onHide={() => setShowLeftMenu(false)}
-          placement='start'
-          className={`modal-90w ${offcanvasClass}`}
+        <Navbar.Brand className={styles.navBarText}>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
+
+        <Navbar.Offcanvas
+          id="offcanvasNavbar"
+          aria-labelledby="offcanvasNavbarLabel"
+          placement="start"
+          className={`sideBar-${theme}`}
+          // className={styles.sideBar}
         >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Categories</Offcanvas.Title>
+          <Offcanvas.Header className="sideBarHeader" closeButton closeVariant={theme === 'dark' ? "white" : null}>
+              <Offcanvas.Title id="offcanvasNavbarLabel">
+                  
+              </Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body>
-            <div className='sideMenu'>
-              <div className='p-3'>
-                <UserButton />
-              </div>
-              <Form className='p-3'>
-                <Form.Group>
+          <Offcanvas.Body className={styles.sideBarBody}>
+            <div className={styles.sideMenu}>
+              
+              <span className={`categoriesText ${styles.categoriesText}`}>
+                Categories
+              </span>
+              <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+                {/* Link to go to all note (dashboard) */}
+                <ListGroup.Item
+                    className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                    // key={category._id}
+                  >
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <Link
+                        className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                        href={`/dashboard`}
+                      >
+                        All Notes
+                      </Link>
+                      
+                    </div>
+                  </ListGroup.Item>
+                {categories.map((category) => (
+                  <ListGroup.Item
+                    className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                    key={category._id}
+                  >
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <Link
+                        className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                        href={`/notes/${encodeURIComponent(category.name)}`}
+                      >
+                        {category.name}
+                      </Link>
+                      <Button
+                        className={`deleteButton ${styles.deleteButton}`}
+                        variant='danger'
+                        size='sm'
+                        onClick={() => handleDeleteCategory(category._id)}
+                      >
+                        
+                        <BsX/>
+                      </Button>
+                    </div>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+              <Form className={`${styles.newCategoryContainer} newCategoryContainer p-1`}>
+                <Form.Group className={styles.newCategoryForm}>
                   <Form.Control
                     type='text'
                     value={newCategory}
-                    className={styles.noteContainer}
                     onChange={(e) => setNewCategory(e.target.value)}
                     placeholder='New category'
                   />
                 </Form.Group>
                 <Button
                   onClick={handleAddCategory}
-                  className={`btn btn-primary mt-2 ${buttonClass}`}
+                  className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}
                 >
-                  Add Category
+                  <BsPlus/>
                 </Button>
               </Form>
-              <ListGroup className='p-3'>
-                {categories.map((category) => (
-                  <ListGroup.Item
-                    className={styles.noteContainer}
-                    key={category._id}
-                  >
-                    <div className='d-flex justify-content-between align-items-center'>
-                      <Link
-                        href={`/notes/${encodeURIComponent(category.name)}`}
-                      >
-                        {category.name}
-                      </Link>
-                      <Button
-                        className={` ${buttonClass}`}
-                        variant='danger'
-                        size='sm'
-                        onClick={() => handleDeleteCategory(category._id)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-              <div className='p-3 d-flex justify-content-between'>
-                <Button variant='link' onClick={handleToggleTheme}>
-                  <BsMoon /> Dark Mode
+
+              <div className={`p-1 d-flex justify-content-between ${styles.sideBarBottom}`}>
+                <div className={styles.userButton}>
+                  <UserButton />
+                </div>
+                <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={() => signOut()}>
+                  <BsBoxArrowRight />
                 </Button>
-                <Button variant='link' onClick={() => signOut()}>
-                  <BsBoxArrowRight /> Sign Out
+                <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={handleToggleTheme}>
+                  {theme === 'dark' ? <BsSun/> : <BsMoonStars/>}
                 </Button>
               </div>
             </div>
+            
           </Offcanvas.Body>
-        </Offcanvas>
+        </Navbar.Offcanvas>
+      </Navbar>
+      
+      <div className='contentContainer' style={{ display: 'flex' }}>
+        <div className={`sideBar-${theme} ${styles.sideBarContainer}`}>
+          <div className={styles.sideMenuFixed}>
+            <span className={`categoriesText ${styles.categoriesText}`}>
+              Categories
+            </span>
+            <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+              {/* Link to go to all note (dashboard) */}
+              <ListGroup.Item
+                className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                // key={category._id}
+              >
+                <div className='d-flex justify-content-between align-items-center'>
+                  <Link
+                    className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                    href={`/dashboard`}
+                  >
+                    All Notes
+                  </Link>
+                </div>
+              </ListGroup.Item>
+              {categories.map((category) => (
+                <ListGroup.Item
+                  className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                  key={category._id}
+                >
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <Link
+                      className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                      href={`/notes/${encodeURIComponent(category.name)}`}
+                    >
+                      {category.name}
+                    </Link>
+                    <Button
+                      className={`deleteButton ${styles.deleteButton}`}
+                      variant='danger'
+                      size='sm'
+                      onClick={() => handleDeleteCategory(category._id)}
+                    >
+                      <BsX/>
+                    </Button>
+                  </div>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+            <Form className={`${styles.newCategoryContainerFixed} newCategoryContainer p-1`}>
+              <Form.Group className={styles.newCategoryForm}>
+                <Form.Control
+                  type='text'
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder='New category'
+                />
+              </Form.Group>
+              <Button onClick={handleAddCategory} className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}>
+                <BsPlus/>
+              </Button>
+            </Form>
+
+            <div className={`p-1 d-flex ${styles.sideBarBottomFixed}`}>
+              <div className={styles.userButton}>
+                <UserButton />
+              </div>
+              <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={() => signOut()}>
+                <BsBoxArrowRight />
+              </Button>
+              <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={handleToggleTheme}>
+                {theme === 'dark' ? <BsSun/> : <BsMoonStars/>}
+              </Button>
+            </div>
+          </div>
+        </div>
+   
         <div className={`${styles.mainContainer} mainContent`}>
           {/* Action buttons */}
 
-          <div className='d-flex justify-content-end p-3'>
+          <div className={`${styles.searchBar} d-flex justify-content-end p-3`}>
             <Form.Control
               type='text'
               value={searchInput}
@@ -350,8 +456,10 @@ const Dashboard = () => {
               placeholder='Search...'
               className='mx-1'
             />
-            <Dropdown onSelect={handleFilter} className='mx-1'>
+            <Dropdown onSelect={handleFilter} className={`${styles.filter} mx-1`}>
+              
               <Dropdown.Toggle variant='outline-secondary'>
+                <span>Filter</span>
                 <BsFilter />
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -369,15 +477,18 @@ const Dashboard = () => {
             </Dropdown>
             <Button
               variant='outline-secondary'
-              className='mx-1'
+              className={`${styles.sort} mx-1`}
               onClick={handleSort}
             >
+              <span>Sort</span>
               {sortDesc ? <RiSortAsc /> : <RiSortDesc />}
-
             </Button>
           </div>
+          <div className={`${styles.categoryText}`}>
+            All Notes
+          </div>
           {/* Notes list */}
-          <Container>
+          <Container className={styles.container}>
             <ListGroup>
               {notes.map((note) => (
                 <ListGroup.Item className={styles.noteContainer} key={note._id}>
@@ -429,6 +540,7 @@ const Dashboard = () => {
                 className={`${styles.addButton} fab-button ${buttonClass}`}
                 onClick={handleCreateNewNote}
               >
+                <span>New Note</span>
                 <BsPlus />
               </Button>
             </div>
@@ -507,7 +619,7 @@ const Dashboard = () => {
           filter: blur(${(props) => (props.showLeftMenu ? '5px' : '0')});
         }
       `}</style>
-    </>
+    </div>
   );
 };
 

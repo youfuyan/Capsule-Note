@@ -1,0 +1,65 @@
+.loadingContainer{
+    display:flex;
+    flex-direction: column;
+    height:100vh;
+    width:100vw;
+    align-items:center;
+    justify-content: center;
+    background-color:var(--loading-background);
+    color:var(--loading-text);
+}
+.textContainer{
+    display:flex;
+    flex-direction: row;
+    align-items: flex-end;
+    
+}
+.loadingText{
+    font-size: 2em;
+
+}
+
+.loadingDot1{
+    /* animation: dot1 1s infinite; */
+    fill:#c0c0c0;
+    height:1.5em;
+    animation: leftDot 1.2s infinite linear;
+
+}
+.loadingDot2{
+    fill:var(--gray1);
+    height:1.5em;
+
+}
+.loadingDot3{
+    
+    fill:var(--gray2);    
+    height:1.5em;
+
+}
+.loadingDot4{
+    fill:var(--gray3);
+    height:1.5em;
+
+}
+.loadingDot5{
+    
+    fill:var(--gray4);
+    height:1.5em;
+	animation: rightDot 1.2s infinite linear;
+}
+
+@keyframes rightDot {
+    0% { transform:translate(0px,0px); animation-timing-function: ease-out;}
+    25% {transform:translate(4em, 0px); animation-timing-function: ease-in;}
+    50% {transform:translate(0px, 0px);}
+} 
+
+@keyframes leftDot {
+    50% { transform:translate(0px,0px); animation-timing-function: ease-out;}
+    75% {transform:translate(-4em, 0px); animation-timing-function: ease-in;}
+    100% {transform:translate(0px, 0px)}
+}
+
+
+

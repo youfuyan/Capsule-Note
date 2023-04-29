@@ -11,8 +11,8 @@ import '../styles/styles.css';
 import { useEffect, useState, createContext} from 'react';
 import { useRouter } from 'next/router';
 
-import useLocalStorage from 'use-local-storage'
-import { useMediaQuery } from "react-responsive";
+// import useLocalStorage from 'use-local-storage'
+// import { useMediaQuery } from "react-responsive";
 
 const publicPages = ['/', '/signin', '/signup'];
 export const ThemeContext = createContext({

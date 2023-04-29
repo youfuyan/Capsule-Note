@@ -71,62 +71,6 @@
 
 
 
-/* when the screen is wider than 800px */
-/* @media screen and (min-width: 800px)  and (max-width:1200px){
-  .landingContainer{
-    display:flex;
-    flex-direction: row;
-    justify-content: center;
-    height:100vh;
-  }
-  .image{
-    display:none
-  }
-  .imageMediumLarge{
-    display:none;
-  }
-  .imageDesktop{
-    display: none;
-  }
-  .imageMedium{
-    display:inline-block;
-    width:100%;
-  }
-  .landingLogo{
-    width:30vw;
-    position: absolute;
-    left:0vw;
-  }
-  .landingLogoContainer{
-    flex:1;
-    margin:auto;
-  }
-  .detailsContainer{
-    display:flex;
-    flex-direction: column;
-    flex:1;
-    margin:auto;
-  }
-  .detailsBox{
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    flex:1;
-    margin:auto;
-    padding:3vw 4vw;
-    border:2px solid #000;
-    border-radius: 20px;
-  }
-  .landingButton{
-    display: block;
-    margin:auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-
-
-} */
-
 @media screen and (min-width: 1000px) {
   .landingContainer{
     display: grid;
@@ -137,7 +81,6 @@
   .landingLogoContainer{
     grid-column:1;
     grid-row:1;
-    z-index:-1;
     /* height:100vh; */
   }
   .image{
@@ -185,50 +128,3 @@
   }
 }
 
-/* @media screen and (min-width: 1800px){
-  .landingContainer{
-    display: grid;
-    grid-template-columns: 50vw 50vw;
-    position: relative;
-    height:100vh;
-  }
-  .landingLogoContainer{
-    grid-column:1;
-    grid-row:1;
-    z-index:-1;
-  }
-  .image{
-    display:none;
-  }
-  .imageMedium{
-    display:none;
-  }
-  .imageMediumLarge{
-    display:none;
-  }
-  .imageDesktop{
-    display:inline-block;
-    max-height:100vh;
-    z-index:-1;
-    object-fit:fill;
-  }
-  .landingLogo{
-    width: 24vw;
-    position: absolute;
-  }
-  .detailsContainer{
-    grid-column: 2;
-    grid-row:1;
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 50vw;
-    z-index: 1;
-  }
-  .landingButton{
-    display: block;
-    margin:auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-} */

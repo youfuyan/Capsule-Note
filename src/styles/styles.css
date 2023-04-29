@@ -40,39 +40,95 @@ element{
   --gray1: #a1a1a1;
   --gray0: #f2f2f2;
 
+  --purpleS:#CF91F3; /*for light mode*/
+  --purpleG:#CAA0E3;  /*for dark mode*/
+
   /*default background color*/
   --background: #ffffff;
   background-color: var(--background);
 
+  /* dashboard page */
+  --dashboard-header-background: var(--gray6);
+  --dashboard-header-text:var(--gray0);
+  --dashboard-background:var(--background);
+  --dashboard-search-background: var(--gray0);
+  --dashboard-search-text:var(--gray6);
+  --dashboard-search-placeholder-text:var(--gray4);
+  /* --dashboard-filter-background:var(--gray6);
+  --dashboard-filter-text:var(--gray0); */
+  --dashboard-filter-background:var(--purpleS);
+  --dashboard-filter-text:var(--gray6);
+  --dashboard-note-background:var(--background);
+  --dashboard-note-text:var(--gray5);
+  /* --dashboard-note-border:var(--gray0); */
+  --dashboard-note-border:var(--purpleS);
+  --dashboard-note-hover-background:var(--gray0);
+  --dashboard-add-button-hover-background:var(--gray6);
+
+  --sidebar-background:var(--background);
+
   /* editor page*/
-  --editor-header-background: black;
+  --editor-header-background: var(--gray6);
+  --editor-header-text:var(--gray0);
   --editor-background: white;
-  --editor-text: black;
+  --editor-text: var(--gray5);
   /*editor toolbar*/
-  --editor-toolbar-text: var(--gray4);
+  --editor-toolbar-text: var(--gray4); 
   --editor-placeholder-text: var(--gray4);
-  --editor-toolbar-active: #ad68de; /*this should be on the darker side and a similar hue as the var in dark-theme*/
+  --editor-toolbar-active: var(--purpleS); /*this should be on the darker side and a similar hue as the var in dark-theme*/
   --editor-toolbar-background: var(--gray0);
-  --caret: black;
+  --caret: var(--gray5);
+
+  /* loading page */
+  --loading-background: white;
+  --loading-text:var(--gray3);
 }
 
 /*variable colors for dark theme*/
 [data-theme='dark'] {
   /*default background color*/
-  --background: black;
+  --background: var(--gray6);
   background-color: var(--background);
+
+  /* dashboard page */
+  --dashboard-header-background: var(--gray5);
+  --dashboard-header-text:white;
+  --dashboard-background:var(--gray6);
+  --dashboard-search-background:var(--gray5);
+  --dashboard-search-text:var(--gray0);
+  --dashboard-search-placeholder-text:var(--gray1);
+  /* --dashboard-filter-background:var(--gray5);
+  --dashboard-filter-text:var(--gray0); */
+  --dashboard-filter-background:var(--purpleG);
+  --dashboard-filter-text:var(--gray6);
+  --dashboard-note-background:var(--background);
+  --dashboard-note-text:var(--gray0);
+  /* --dashboard-note-border:var(--gray5); */
+  --dashboard-note-border:var(--purpleG);
+  --dashboard-note-hover-background:var(--gray5);
+  --dashboard-add-button-hover-background:var(--gray4);
+
+  --sidebar-background:var(--background);
+  
 
   /* editor page*/
   --editor-header-background: var(--gray5);
+  --editor-header-text:var(--gray0);
   --editor-background: var(--gray6);
-  --editor-text: white;
+  --editor-text: var(--gray1);
   /*editor toolbar*/
   --editor-toolbar-text: var(--gray1);
   --editor-placeholder-text: var(--gray3);
-  --editor-toolbar-active: #debdf2; /*this should be on the lighter side and a similar hue as the var in light-theme*/
+  --editor-toolbar-active: var(--purpleG); /*this should be on the lighter side and a similar hue as the var in light-theme*/
   --editor-toolbar-background: var(--gray5);
   --caret: var(--gray1);
+
+  /* loading page */
+  --loading-background: var(--gray6);
+  --loading-text:var(--gray1);
 }
+
+
 
 /* NOTE: these styles for the quill editor must be applied in this file, when they are applied in the editor file it doesn't work*/
 /* Other styles should work fine in their own css files, quilljs is weird and I could only get it to work this way*/
@@ -233,32 +289,181 @@ element{
   background-color: var(--gray4);
 }
 
-/* Add this style to handle dark mode for the button */
-.buttonDarkMode {
-  background-color: var(--gray4);
-  color: var(--gray1);
-}
 
-/* Add this style for button hover in dark mode */
-.buttonDarkMode:hover {
-  background-color: var(--gray3);
-}
 
 [data-theme='dark'] .offcanvasDarkMode {
   background-color: var(--gray5);
 }
 
-[data-theme='dark'] .buttonDarkMode {
-  background-color: var(--gray3);
-  color: var(--gray6);
-}
 
-[data-theme='dark'] .buttonDarkMode:hover {
-  background-color: var(--gray2);
-}
 
 /* Dark mode styles for the Quill editor's content area */
-[data-theme='dark'] .ql-editor {
-  background-color: var(--gray6); /* Dark background color */
-  color: var(--gray1); /* Light text color */
+.ql-editor{
+    color:var(--editor-text)
+}
+
+
+
+.list-group-item:first-child{
+  border:none;
+  border-radius: 0px;
+  border-bottom: var(--dashboard-note-border) 1px solid;
+}
+.list-group-item + .list-group-item{
+  border:none;
+  border-radius: 0px;
+  border-bottom: var(--dashboard-note-border) 1px solid;
+}
+.list-group-item:last-child{
+  border:none;
+  border-radius: 0px;
+  border-bottom: var(--dashboard-note-border) 1px solid;
+}
+
+/*webcam styling*/
+video{
+  max-width: 400px;
+  max-height: 400px;
+  width:100%;
+  height:auto;
+}
+.webcamModal .modal-header{
+  background-color: var(--gray6);
+  border:none;
+}
+.webcamModal .modal-body{
+  background-color:var(--gray6);
+}
+
+
+
+
+/* sideBar styles */
+.sideBar-dark{
+  background-color: var(--gray6);
+}
+.sideBar-light{
+  background-color: #ffffff;
+}
+/*background color of sidebar*/
+.sideBar-dark .sideBarHeader{
+  background-color: var(--gray6);
+}
+.sideBarHeader button:focus{
+  box-shadow: none;
+}
+
+.sideBar-light .sideBarHeader{
+  background-color:white;
+}
+/*new category input*/
+.sideBar-dark input{
+  background-color:var(--gray5);
+  color:var(--gray0);
+}
+.sideBar-dark input::placeholder{
+  color:var(--gray1);
+}
+.sideBar-dark input:focus{
+  background-color:var(--gray5);
+  border:none;
+  box-shadow: none;
+  color:var(--gray0);
+}
+.sideBar-light input{
+  background-color:var(--gray0);
+}
+.sideBar-light input::placeholder{
+  color:var(--gray3);
+}
+.sideBar-light input:focus{
+  background-color:white;
+  border:var(--gray1) 1.5px solid;
+  box-shadow: none;
+  color:var(--gray6);
+}
+/*list of categories*/
+.sideBar-dark .categoriesText{
+  color:var(--gray1);
+  background-color: var(--gray6);
+}
+.sideBar-light .categoriesText{
+  color:var(--gray5);
+  background-color: white;
+}
+.sideBar-dark .sideBarCatContainer{
+  background-color: var(--gray6);
+  border:none;
+}
+.sideBar-dark .sideBarCatContainer a:hover{
+  color:var(--purpleG);
+}
+.sideBar-light .sideBarCatContainer{
+  background-color: white;
+  border:none;
+}
+.sideBar-light .sideBarCatContainer a:hover{
+  color:var(--purpleS);
+}
+.sideBar-dark .sideBarCatLink{
+  color:var(--gray1);
+}
+/*delete category button*/
+.sideBar-dark .deleteButton{
+  color:var(--gray2);
+}
+.sideBar-dark .deleteButton:hover{
+  color:var(--gray0);
+}
+.sideBar-light .deleteButton{
+  color:var(--gray2);
+}
+.sideBar-light .deleteButton:hover{
+  color:var(--gray5);
+}
+/*new category form */
+.sideBar-dark .newCategoryContainer{
+  background-color: var(--gray6);
+}
+.sideBar-light .newCategoryContainer{
+  background-color: white;
+}
+/*new category button*/
+.sideBar-dark .newCategoryButton{
+  background-color: transparent;
+  color:var(--gray1)
+}
+.sideBar-light .newCategoryButton{
+  background-color: transparent;
+  color:var(--gray3);
+}
+.sideBar-dark .newCategoryButton:hover,
+.sideBar-dark .newCategoryButton:active{
+  background-color:transparent;
+  color:var(--gray0);
+}
+.sideBar-light .newCategoryButton:hover,
+.sideBar-light .newCategoryButton:active{
+  background-color:transparent;
+  color:var(--gray6);
+}
+/*sidebar bottom buttons (dark mode toggle and logout)*/
+.sideBar-dark .sideBarBottomButton{
+  color:var(--gray1);
+}
+.sideBar-dark .sideBarBottomButton:hover,
+.sideBar-dark .sideBarBottomButton:active{
+  color:var(--gray0);
+}
+.sideBar-light .sideBarBottomButton{
+  color:var(--gray3);
+}
+.sideBar-light .sideBarBottomButton:hover,
+.sideBar-light .sideBarBottomButton:active{
+  color:var(--gray6);
+}
+
+.btn-check:checked + .btn, :not(.btn-check) + .btn:active, .btn:first-child:active, .btn.active, .btn.show{
+  background-color: var(--dashboard-add-button-hover-background);
+  box-shadow: none;
 }

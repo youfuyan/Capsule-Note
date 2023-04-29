@@ -1,9 +1,9 @@
 /* styles/editor.module.css */
 .pageContainer{
   background-color: var(--editor-background);
-  height:100vh;
+  height:100%;
   caret-color:var(--caret);
-
+  min-height:100vh;
   display:flex;
   flex-direction: column;
 }
@@ -23,7 +23,8 @@
   margin-bottom: 10px;
   padding: 10px;
   background-color: var(--editor-header-background); 
-  color: #ffffff;
+  color: var(--editor-header-text);
+  border-bottom: var(--dashboard-filter-background) 2px solid;
 }
 
 .backButton {
@@ -37,10 +38,21 @@
 .pageTitle {
   flex: 1;
   text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right:2em;
+  padding-left:2em;
 }
 
 .saveStatus {
   font-size: 14px;
+}
+
+.titleContainer{
+  display:flex;
+  flex-direction: row;
+
 }
 
 .noteTitleInput {
@@ -53,6 +65,46 @@
   outline: none;
   background-color: var(--editor-background);
   color:var(--editor-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.cameraButton{
+  background-color: var(--editor-toolbar-background);
+  color:var(--editor-toolbar-text);
+  border:none;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+}
+.cameraButton:hover{
+  color:var(--editor-toolbar-active);
+  background-color: var(--editor-toolbar-background);
+}
+
+.webcam{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap:5px;
+}
+.webcamButton{
+  background-color: var(--dashboard-filter-background);
+  color:var(--dashboard-filter-text);
+  border:none;
+  border-radius: 20px;
+
+}
+.webcamButton:hover,
+.webcamButton:active{
+  background-color: var(--dashboard-filter-background);
+  color:var(--dashboard-filter-text);
+  border:none;
+  box-shadow: none;
 }
 
 .noteEditor {
