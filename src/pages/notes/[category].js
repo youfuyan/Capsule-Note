@@ -30,7 +30,6 @@ import {
   BsX,
   BsSun,
   BsMoonStars,
-  BsFillHouseFill,
 } from 'react-icons/bs';
 
 import { RiSortAsc, RiSortDesc } from 'react-icons/ri';
@@ -251,9 +250,6 @@ const CategoryPage = () => {
         >
           <BsList />
         </Navbar.Toggle>
-        <Nav.Link href={'/dashboard'}>
-          <BsFillHouseFill />
-        </Nav.Link>
         {/* If first name is not available, use email as name instead. */}
         <Navbar.Brand className={styles.navBarText}>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
 
