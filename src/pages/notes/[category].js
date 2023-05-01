@@ -202,6 +202,18 @@ const CategoryPage = () => {
     setNotes(fetchedNotes);
   };
 
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      const token = await getToken({ template: 'codehooks' });
+      await deleteCat(token, categoryId);
+      setCategories(
+        categories.filter((category) => category._id !== categoryId)
+      );
+    } catch (error) {
+      console.error('Error deleting category:', error);
+    }
+  };
+
   // Handle moving the note to a different category
   const handleMoveNoteToCategory = async () => {
     // Get the selected category from the select input element
