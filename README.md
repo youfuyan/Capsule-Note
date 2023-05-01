@@ -101,3 +101,4 @@ relied on external code, expertise, or anything else, please disclose that
 here:**
 
 - Future Features: Real-time collaboration, Data security and Privacy, Push notifications, and more.
+- User Privacy: Cron job will run every every monday to delete images in imagekit that are not stored within the notes for user privacy reasons while improving data storage and bandwidth use.
