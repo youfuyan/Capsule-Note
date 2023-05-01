@@ -24,6 +24,10 @@ import {
   BsPlus,
   BsMoon,
   BsBoxArrowRight,
+  BsX,
+  BsSun,
+  BsMoonStars,
+  BsFillArrowLeftCircleFill,
 } from 'react-icons/bs';
 // ...
 
@@ -102,13 +106,30 @@ const Dashboard = () => {
     generatePdfHTML(title, content);
   };
 
+  const handleCopy = async (title, content, category) => {
+    const newTitle = title + " copy"
+    // copy the note's category
+    const copiedNote = {
+      title: newTitle,
+      content: content,
+      category: category,
+      userId: userId
+    };
+
+    const token = await getToken({ template: 'codehooks' });
+    await addNote(token, copiedNote);
+
+    // Refresh the notes list based on the selected category
+    const fetchedNotes = await getNotes(token);
+    setNotes(fetchedNotes);
+  }
 
   const handleAddCategory = async () => {
     if (newCategory && newCategory.trim()) {
       const token = await getToken({ template: 'codehooks' });
       const newCat = {
         userId: userId,
-        name: newCategory.trim(),
+        name: newCategory,
       };
       const createdCategory = await addCat(token, newCat); // Get the created category from the API response
       setCategories([...categories, createdCategory]); // Add the created category to the state
@@ -209,11 +230,12 @@ const Dashboard = () => {
     if (searchInput) {
       fetchedNotes = await getSearchRes(token, searchInput);
     } else if (filterCriteria) {
+      console.log("filter criterior is", filterCriteria)
       fetchedNotes = await getNotesByCat(token, filterCriteria);
     } else if (sortDesc) {
-      fetchedNotes = await getNotesDesc(token, userId);
+      fetchedNotes = await getNotesDesc(token);
     } else {
-      fetchedNotes = await getNotesAsce(token, userId);
+      fetchedNotes = await getNotesAsce(token);
     }
     setNotes(fetchedNotes);
   };
@@ -238,6 +260,7 @@ const Dashboard = () => {
     } else {
       // Otherwise, update the filter criteria and fetch notes based on the new criteria
       setFilterCriteria(criteria);
+      console.log('filter by cat', criteria);
       const fetchedNotes = await getNotesByCat(token, criteria);
       setNotes(fetchedNotes);
     }
@@ -271,76 +294,176 @@ const Dashboard = () => {
         >
           <BsList />
         </Navbar.Toggle>
+        
         {/* If first name is not available, use email as name instead. */}
         <Navbar.Brand className={styles.navBarText}>{user.firstName ? user.firstName : user.primaryEmailAddress.emailAddress}&apos;s Notes</Navbar.Brand>
-      </Navbar>
-      <div className='contentContainer' style={{ display: 'flex' }}>
-        <Offcanvas
-          show={showLeftMenu}
-          onHide={() => setShowLeftMenu(false)}
-          placement='start'
-          className={`modal-90w ${offcanvasClass}`}
+
+        <Navbar.Offcanvas
+          id="offcanvasNavbar"
+          aria-labelledby="offcanvasNavbarLabel"
+          placement="start"
+          className={`sideBar-${theme}`}
+          // className={styles.sideBar}
         >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Categories</Offcanvas.Title>
+          <Offcanvas.Header className="sideBarHeader" closeButton closeVariant={theme === 'dark' ? "white" : null}>
+              <Offcanvas.Title id="offcanvasNavbarLabel">
+                  
+              </Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body>
-            <div className='sideMenu'>
-              <div className='p-3'>
-                <UserButton />
-              </div>
-              <Form className='p-3'>
-                <Form.Group>
-                  <Form.Control
-                    type='text'
-                    value={newCategory}
-                    className={styles.noteContainer}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    placeholder='New category'
-                  />
-                </Form.Group>
-                <Button
-                  onClick={handleAddCategory}
-                  className={`btn btn-primary mt-2 ${buttonClass}`}
-                >
-                  Add Category
-                </Button>
-              </Form>
-              <ListGroup className='p-3'>
+          <Offcanvas.Body className={styles.sideBarBody}>
+            <div className={styles.sideMenu}>
+              
+              <span className={`categoriesText ${styles.categoriesText}`}>
+                Categories
+              </span>
+              <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+                {/* Link to go to all note (dashboard) */}
+                <ListGroup.Item
+                    className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                    // key={category._id}
+                  >
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <Link
+                        className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                        href={`/dashboard`}
+                      >
+                        All Notes
+                      </Link>
+                      
+                    </div>
+                  </ListGroup.Item>
                 {categories.map((category) => (
                   <ListGroup.Item
-                    className={styles.noteContainer}
+                    className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
                     key={category._id}
                   >
                     <div className='d-flex justify-content-between align-items-center'>
                       <Link
+                        className={` sideBarCatLink ${styles.sideBarCatLink}`}
                         href={`/notes/${encodeURIComponent(category.name)}`}
                       >
                         {category.name}
                       </Link>
                       <Button
-                        className={` ${buttonClass}`}
+                        className={`deleteButton ${styles.deleteButton}`}
                         variant='danger'
                         size='sm'
                         onClick={() => handleDeleteCategory(category._id)}
                       >
-                        Delete
+                        
+                        <BsX/>
                       </Button>
                     </div>
                   </ListGroup.Item>
                 ))}
               </ListGroup>
-              <div className='p-3 d-flex justify-content-between'>
-                <Button variant='link' onClick={handleToggleTheme}>
-                  <BsMoon /> Dark Mode
+              <Form className={`${styles.newCategoryContainer} newCategoryContainer p-1`}>
+                <Form.Group className={styles.newCategoryForm}>
+                  <Form.Control
+                    type='text'
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    placeholder='New category...'
+                  />
+                </Form.Group>
+                <Button
+                  onClick={handleAddCategory}
+                  className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}
+                >
+                  <BsPlus/>
                 </Button>
-                <Button variant='link' onClick={() => signOut()}>
-                  <BsBoxArrowRight /> Sign Out
+              </Form>
+
+              <div className={`p-1 d-flex justify-content-between ${styles.sideBarBottom}`}>
+                <div className={styles.userButton}>
+                  <UserButton />
+                </div>
+                <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={() => signOut()}>
+                  <BsBoxArrowRight />
+                </Button>
+                <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={handleToggleTheme}>
+                  {theme === 'dark' ? <BsSun/> : <BsMoonStars/>}
                 </Button>
               </div>
             </div>
+            
           </Offcanvas.Body>
-        </Offcanvas>
+        </Navbar.Offcanvas>
+      </Navbar>
+      
+      <div className='contentContainer' style={{ display: 'flex' }}>
+        <div className={`sideBar-${theme} ${styles.sideBarContainer}`}>
+          <div className={styles.sideMenuFixed}>
+            <span className={`categoriesText ${styles.categoriesText}`}>
+              Categories
+            </span>
+            <ListGroup className={`p-1 ${styles.sideBarCatList}`}>
+              {/* Link to go to all note (dashboard) */}
+              <ListGroup.Item
+                className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                // key={category._id}
+              >
+                <div className='d-flex justify-content-between align-items-center'>
+                  <Link
+                    className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                    href={`/dashboard`}
+                  >
+                    All Notes
+                  </Link>
+                </div>
+              </ListGroup.Item>
+              {categories.map((category) => (
+                <ListGroup.Item
+                  className={` sideBarCatContainer ${styles.sideBarCatContainer}`}
+                  key={category._id}
+                >
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <Link
+                      className={` sideBarCatLink ${styles.sideBarCatLink}`}
+                      href={`/notes/${encodeURIComponent(category.name)}`}
+                    >
+                      {category.name}
+                    </Link>
+                    <Button
+                      className={`deleteButton ${styles.deleteButton}`}
+                      variant='danger'
+                      size='sm'
+                      onClick={() => handleDeleteCategory(category._id)}
+                    >
+                      <BsX/>
+                    </Button>
+                  </div>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+            <Form className={`${styles.newCategoryContainerFixed} newCategoryContainer p-1`}>
+              <Form.Group className={styles.newCategoryForm}>
+                <Form.Control
+                  type='text'
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder='New category...'
+                />
+              </Form.Group>
+              <Button onClick={handleAddCategory} className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}>
+                <BsPlus/>
+              </Button>
+            </Form>
+
+            <div className={`p-1 d-flex ${styles.sideBarBottomFixed}`}>
+              <div className={styles.userButton}>
+                <UserButton />
+              </div>
+              <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={() => signOut()}>
+                <BsBoxArrowRight />
+              </Button>
+              <Button className={`sideBarBottomButton ${styles.sideBarBottomButton}`} variant='link' onClick={handleToggleTheme}>
+                {theme === 'dark' ? <BsSun/> : <BsMoonStars/>}
+              </Button>
+            </div>
+          </div>
+        </div>
+  
         <div className={`${styles.mainContainer} mainContent`}>
           {/* Action buttons */}
 
@@ -354,7 +477,7 @@ const Dashboard = () => {
             />
             <Dropdown onSelect={handleFilter} className={`${styles.filter} mx-1`}>
               
-              <Dropdown.Toggle variant='outline-secondary'>
+              <Dropdown.Toggle variant='outline-secondary' >
                 <span>Filter</span>
                 <BsFilter />
               </Dropdown.Toggle>
@@ -379,6 +502,9 @@ const Dashboard = () => {
               <span>Sort</span>
               {sortDesc ? <RiSortAsc /> : <RiSortDesc />}
             </Button>
+          </div>
+          <div className={`${styles.categoryText}`}>
+            All Notes
           </div>
           {/* Notes list */}
           <Container className={styles.container}>
@@ -414,7 +540,9 @@ const Dashboard = () => {
                           Move to Category
                         </Dropdown.Item>
                         <Dropdown.Item onClick={() => generatePdf(note.title, note.content)} href='#/action-2'>Export</Dropdown.Item>
-                        <Dropdown.Item href='#/action-3'>Copy</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleCopy(note.title, note.content, note.category)} href='#'>Copy</Dropdown.Item>
+
+                        {/* <Dropdown.Item href='/dashboard'>Copy</Dropdown.Item> */}
                         <Dropdown.Item
                           onClick={() => handleDeleteNote(note._id)}
                         >

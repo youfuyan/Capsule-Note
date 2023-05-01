@@ -1,14 +1,27 @@
-import { app, Datastore } from 'codehooks-js';
-import { crudlify } from 'codehooks-crudlify';
+import { app, Datastore } from "codehooks-js";
+import { crudlify } from "codehooks-crudlify";
 // import { date, object, string, number, boolean} from 'yup';
-import jwtDecode from 'jwt-decode';
-import * as Yup from 'yup';
+import jwtDecode from "jwt-decode";
+import * as Yup from "yup";
+import { parse } from "node-html-parser";
+import ImageKit from "imagekit";
+
+// for imagekit autheticationEndpoint
+
+const publicKey = process.env.IMAGEKIT_PUBLIC_KEY;
+const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+const urlEndpoint = process.env.IMAGEKIT_URL_ENDPOINT;
+const imagekit = new ImageKit({
+  publicKey: publicKey,
+  privateKey: privateKey,
+  urlEndpoint: urlEndpoint
+});
 
 // Define the schema for a Todo object using Yup
 const noteSchema = Yup.object({
-  userId: Yup.string().required('User ID is required'), // User ID
-  title: Yup.string().required('Note title is required'), // note title
-  content: Yup.string().required('Note content is required'), // note content
+  userId: Yup.string().required("User ID is required"), // User ID
+  title: Yup.string().required("Note title is required"), // note title
+  content: Yup.string().required("Note content is required"), // note content
   category: Yup.string().nullable(), // note category (optional)
   createdOn: Yup.date().default(() => new Date()),
 });
@@ -24,12 +37,12 @@ const categoriesSchema = Yup.object({
 
 const options = {
   // Specify the schema type as "yup"
-  schema: 'yup',
+  schema: "yup",
 };
 
 const userAuth = async (req, res, next) => {
   // console.log(req.headers);
-  
+
   try {
     const { authorization } = req.headers;
     // console.log('in userAuth req header \n', req.headers);
@@ -81,23 +94,21 @@ app.use("/categories", (req, res, next) => {
   next();
 });
 
-
 // Make REST API CRUD operations for the "notes" collection with the Yup schema
 
 // search the note table by keyword
 // show results by date desc order
 async function getSearchRes(req, res) {
-
   const userId = req.user_token.sub;
   const searchKey = req.params.searchInput;
   const conn = await Datastore.open();
   const query = {
     userId: userId,
     $or: [
-      { title: { $regex: searchKey, $options: 'gi' } },
-      { content: { $regex: searchKey, $options: 'gi' } },
-      { category: { $regex: searchKey, $options: 'gi' } },
-      { createdOn: { $regex: searchKey, $options: 'gi' } },
+      { title: { $regex: searchKey, $options: "gi" } },
+      { content: { $regex: searchKey, $options: "gi" } },
+      { category: { $regex: searchKey, $options: "gi" } },
+      { createdOn: { $regex: searchKey, $options: "gi" } },
     ],
   };
   const options = {
@@ -107,30 +118,54 @@ async function getSearchRes(req, res) {
   conn.getMany("note", options).json(res);
 }
 
+// search within a category
+async function getSearchResByCat(req, res) {
+  const userId = req.user_token.sub;
+  const searchKey = req.params.searchInput;
+  const cat = req.params.cat;
+  const conn = await Datastore.open();
+  const query = {
+    userId: userId,
+    category: cat,
+    $or: [
+      { title: { $regex: searchKey, $options: "gi" } },
+      { content: { $regex: searchKey, $options: "gi" } },
+      { category: { $regex: searchKey, $options: "gi" } },
+      { createdOn: { $regex: searchKey, $options: "gi" } },
+    ],
+  };
+  const options = {
+    sort: { createdOn: -1 },
+    filter: query,
+  };
+  conn.getMany("note", options).json(res);
+}
+
 async function getAllNotes(req, res) {
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
-  
+
   const options = {
-    filter: { "userId": userId },
+    filter: { userId: userId },
+    sort: { createdOn: -1}
   };
   conn.getMany("note", options).json(res);
 }
 
 // get note by id
-async function getNote(req, res){
+async function getNote(req, res) {
   const id = req.params.id;
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
-  try{
+  try {
     const doc = await conn.getOne("note", id);
-    if(doc.userId != userId){
+    if (doc.userId != userId) {
       res.status(403).end();
       return;
-    } else{
+    } else {
       res.json(doc);
     }
-  } catch(e){
+  } catch (e) {
     res.status(404).end(e);
     return;
   }
@@ -146,46 +181,49 @@ async function getNote(req, res){
 async function editNote(req, res) {
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
-  if(req.body.userId == userId){
+  if (req.body.userId == userId) {
     req.body.createdOn = new Date();
     req.body._id = req.params.id;
-    const data = await conn.updateOne('note', req.params.id, req.body);
+    const data = await conn.updateOne("note", req.params.id, req.body);
     res.json(data);
-  } else{
+  } else {
     res.status(403).end();
     return;
   }
 }
 
-// has req.body.userId already inserted, don't have to pass userId
-// {
-//   "title": "local note 4",
-//   "content": "new content for note 4",
-//   "category": "health"
-// }
-// async function createNote(req, res) {
-//   const conn = await Datastore.open();
-//   req.body.createdOn = new Date();
-//   const data = conn.insertOne("note", req.body);
-//   console.log(JSON.stringify(data));
-//   res.status(201).json(req.body);
-//   // console.log(res.json());
-// }
-
+// sort all notes by date
 async function getNotesSortedByDate(req, res) {
   const userId = req.user_token.sub;
   const sortByDesc = req.params.sortByDesc === "true";
 
   const conn = await Datastore.open();
   const options = {
-    filter: { "userId": userId },
-    sort: { "createdOn": sortByDesc ? 0 : 1 }, // Use -1 for descending sort order and 1 for ascending sort order
+    filter: { userId: userId },
+    sort: { createdOn: sortByDesc ? 0 : 1 }, // Use -1 for descending sort order and 1 for ascending sort order
+  };
+  conn.getMany("note", options).json(res);
+}
+
+// sort all notes from a category by date
+async function getNotesSortedByDateByCat(req, res) {
+  const userId = req.user_token.sub;
+  const sortByDesc = req.params.sortByDesc === "true";
+  const cat = req.params.cat;
+
+  const conn = await Datastore.open();
+  const options = {
+    filter: { 
+      userId: userId,
+      category: cat
+    },
+    sort: { createdOn: sortByDesc ? -1 : 1 }, // Use -1 for descending sort order and 1 for ascending sort order
   };
   conn.getMany("note", options).json(res);
 }
 
 // get notes by category
-async function getNoteByCat(req, res){
+async function getNoteByCat(req, res) {
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
   const options = {
@@ -194,41 +232,41 @@ async function getNoteByCat(req, res){
   conn.getMany("note", options).json(res);
 }
 
-app.get('/note', getAllNotes); // get all notes under curr user
+app.get("/note", getAllNotes); // get all notes under curr user
 app.get("/note/:id", getNote); // get a note by note _id
 app.get("/note/category/:cat", getNoteByCat);
 app.put("/note/:id", editNote); // update note by _id with new json
-// app.post("/note", createNote);  // add a new note to curr user
 app.get("/note/sortByDesc/:sortByDesc", getNotesSortedByDate);
-app.get('/note/getAllSearchNotes/:searchInput', getSearchRes);
+app.get("/note/sortByDescByCat/:cat/:sortByDesc", getNotesSortedByDateByCat);
+app.get("/note/getAllSearchNotes/:searchInput", getSearchRes);
+app.get("/note/getAllSearchNotesByCat/:searchInput/:cat", getSearchResByCat);
 
-
-// for categories 
+// for categories
 
 async function getAllCats(req, res) {
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
-  
+
   const options = {
-    filter: { "userId": userId },
+    filter: { userId: userId },
   };
   conn.getMany("categories", options).json(res);
 }
 
 // get note by id
-async function getCat(req, res){
+async function getCat(req, res) {
   const id = req.params.id;
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
-  try{
+  try {
     const doc = await conn.getOne("categories", id);
-    if(doc.userId != userId){
+    if (doc.userId != userId) {
       res.status(403).end();
       return;
-    } else{
+    } else {
       res.json(doc);
     }
-  } catch(e){
+  } catch (e) {
     res.status(404).end(e);
     return;
   }
@@ -242,32 +280,75 @@ async function getCat(req, res){
 async function editCat(req, res) {
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
-  if(req.body.userId == userId){
+  if (req.body.userId == userId) {
     req.body.createdOn = new Date();
     req.body._id = req.params.id;
-    const data = await conn.updateOne('categories', req.params.id, req.body);
+    const data = await conn.updateOne("categories", req.params.id, req.body);
     res.json(data);
-  } else{
+  } else {
     res.status(403).end();
     return;
   }
 }
 
-// has req.body.userId already inserted, don't have to pass userId
-// {
-//   "name": "local note 4",
-// }
-// async function createCat(req, res) {
-//   const conn = await Datastore.open();
-//   req.body.createdOn = new Date();
-//   const data = conn.insertOne("categories", req.body);
-//   console.log("data is", data);
-//   res.status(201).json(data);
-//   // console.log("res is", res.json());
-// }
+async function uploadImg(req, res) {
+  imagekit.upload(
+    {
+      file: req.body.file,
+      fileName: "abc.jpg",
+    },
+    function (err, result) {
+      if (result) {
+        res.json(result);
+      }
+      else{
+        res.json(err);
+      }
+    }
+  );
+}
 
+async function handleDeleteImage() {
+  const conn = await Datastore.open();
 
-app.get('/categories', getAllCats); // get all notes under curr user
+  console.log("cron job working...");
+  imagekit.listFiles(
+    { searchQuery: 'createdAt >= "7d"' },
+    function (error, result) {
+      if (error) {
+        console.log("Error: " + error);
+      } else {
+        result.forEach((imagekitImg) => {
+          let imageExists = null;
+          const stream = conn.getMany("note");
+          stream
+            .on("data", (data) => {
+              const content = parse(data.content);
+              content.querySelectorAll("img").every((databaseImg) => {
+                const databaseImgUrl = databaseImg.getAttribute("src");
+                if (imagekitImg.url === databaseImgUrl) {
+                  console.log("image does exist!");
+                  imageExists = true;
+                  return false;
+                }
+                return true;
+              });
+            })
+            .on("end", () => {
+              if (imageExists === null) {
+                console.log("does not exist!");
+                imagekit.deleteFile(imagekitImg.fileId);
+              }
+            });
+        });
+      }
+    }
+  );
+}
+app.job("0 0 * * 1", handleDeleteImage);
+
+app.post("/uploadImg", uploadImg);
+app.get("/categories", getAllCats); // get all notes under curr user
 app.get("/categories/:id", getCat); // get a note by note _id
 app.put("/categories/:id", editCat); // update note by _id with new json
 // app.post("/categories", createCat);  // add a new note to curr user
