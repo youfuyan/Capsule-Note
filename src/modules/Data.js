@@ -16,7 +16,7 @@ export async function getNotes(authToken) {
 }
 
 // get notes by asecding order, userId will be extracted from the token
-export async function getNotesAsce(authToken, userId) {
+export async function getNotesAsce(authToken) {
   // console.log(userId);
 
   const result = await fetch(`${backend_base}/note/sortByDesc/false`, {
@@ -31,13 +31,42 @@ export async function getNotesAsce(authToken, userId) {
 }
 
 // get notes by desecding order, userId will be extracted from the token
-export async function getNotesDesc(authToken, userId) {
+export async function getNotesDesc(authToken) {
   // console.log(userId);
 
   const result = await fetch(`${backend_base}/note/sortByDesc/true`, {
     method: "GET",
     headers: {
       // 'x-api-key': API_KEY,
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+
+  console.log(JSON.stringify(result));
+  return await result.json();
+}
+
+// asceding order of notes from a category
+export async function getNotesAsceByCat(authToken, cat) {
+
+  const result = await fetch(`${backend_base}/note/sortByDescByCat/${cat}/false`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+
+  console.log(JSON.stringify(result));
+  return await result.json();
+}
+
+// desceding order of notes from a category
+export async function getNotesDescByCat(authToken, cat) {
+  // console.log(userId);
+
+  const result = await fetch(`${backend_base}/note/sortByDescByCat/${cat}/true`, {
+    method: "GET",
+    headers: {
       Authorization: `Bearer ${authToken}`,
     },
   });
@@ -103,7 +132,7 @@ export async function getNotesByCat(authToken, cat) {
   }
 }
 
-// get search results
+// get search results from all notes
 // userId will be extracted from token
 export async function getSearchRes(authToken, searchInput) {
   try {
@@ -127,6 +156,32 @@ export async function getSearchRes(authToken, searchInput) {
     return await response.json();
   } catch (error) {
     console.error("Error in getSearchRes function:", error);
+    throw error;
+  }
+}
+
+// get search results from a category notes 
+export async function getSearchResByCat(authToken, searchInput, cat) {
+  try {
+    const response = await fetch(
+      `${backend_base}/note/getAllSearchNotesByCat/${searchInput}/${cat}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error fetching notes for search of a specific category:", errorData);
+      throw new Error("Failed to fetch notes for search from a category notes");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in getSearchResByCat function:", error);
     throw error;
   }
 }
@@ -159,6 +214,7 @@ export async function addNote(authToken, newNote) {
 
   return await response.json();
 }
+
 
 // add a new category
 export async function addCat(authToken, cat) {

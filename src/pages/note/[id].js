@@ -47,7 +47,7 @@ export default function Editor() {
   const { id } = router.query;
   const { isLoaded, userId, sessionId, getToken } = useAuth();
   const [jwt, setJwt] = useState("");
-  // const [camera, setCamera] = useState(false);
+  const [camera, setCamera] = useState(false);
   const webcamRef = useRef(null);
   const quillObj = useRef(false);
 

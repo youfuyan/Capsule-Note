@@ -118,12 +118,36 @@ async function getSearchRes(req, res) {
   conn.getMany("note", options).json(res);
 }
 
+// search within a category
+async function getSearchResByCat(req, res) {
+  const userId = req.user_token.sub;
+  const searchKey = req.params.searchInput;
+  const cat = req.params.cat;
+  const conn = await Datastore.open();
+  const query = {
+    userId: userId,
+    category: cat,
+    $or: [
+      { title: { $regex: searchKey, $options: "gi" } },
+      { content: { $regex: searchKey, $options: "gi" } },
+      { category: { $regex: searchKey, $options: "gi" } },
+      { createdOn: { $regex: searchKey, $options: "gi" } },
+    ],
+  };
+  const options = {
+    sort: { createdOn: -1 },
+    filter: query,
+  };
+  conn.getMany("note", options).json(res);
+}
+
 async function getAllNotes(req, res) {
   const userId = req.user_token.sub;
   const conn = await Datastore.open();
 
   const options = {
     filter: { userId: userId },
+    sort: { createdOn: -1}
   };
   conn.getMany("note", options).json(res);
 }
@@ -168,6 +192,7 @@ async function editNote(req, res) {
   }
 }
 
+// sort all notes by date
 async function getNotesSortedByDate(req, res) {
   const userId = req.user_token.sub;
   const sortByDesc = req.params.sortByDesc === "true";
@@ -176,6 +201,23 @@ async function getNotesSortedByDate(req, res) {
   const options = {
     filter: { userId: userId },
     sort: { createdOn: sortByDesc ? 0 : 1 }, // Use -1 for descending sort order and 1 for ascending sort order
+  };
+  conn.getMany("note", options).json(res);
+}
+
+// sort all notes from a category by date
+async function getNotesSortedByDateByCat(req, res) {
+  const userId = req.user_token.sub;
+  const sortByDesc = req.params.sortByDesc === "true";
+  const cat = req.params.cat;
+
+  const conn = await Datastore.open();
+  const options = {
+    filter: { 
+      userId: userId,
+      category: cat
+    },
+    sort: { createdOn: sortByDesc ? -1 : 1 }, // Use -1 for descending sort order and 1 for ascending sort order
   };
   conn.getMany("note", options).json(res);
 }
@@ -195,7 +237,9 @@ app.get("/note/:id", getNote); // get a note by note _id
 app.get("/note/category/:cat", getNoteByCat);
 app.put("/note/:id", editNote); // update note by _id with new json
 app.get("/note/sortByDesc/:sortByDesc", getNotesSortedByDate);
+app.get("/note/sortByDescByCat/:cat/:sortByDesc", getNotesSortedByDateByCat);
 app.get("/note/getAllSearchNotes/:searchInput", getSearchRes);
+app.get("/note/getAllSearchNotesByCat/:searchInput/:cat", getSearchResByCat);
 
 // for categories
 

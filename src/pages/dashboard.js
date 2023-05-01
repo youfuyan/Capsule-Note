@@ -129,7 +129,7 @@ const Dashboard = () => {
       const token = await getToken({ template: 'codehooks' });
       const newCat = {
         userId: userId,
-        name: newCategory.trim(),
+        name: newCategory,
       };
       const createdCategory = await addCat(token, newCat); // Get the created category from the API response
       setCategories([...categories, createdCategory]); // Add the created category to the state
@@ -230,11 +230,12 @@ const Dashboard = () => {
     if (searchInput) {
       fetchedNotes = await getSearchRes(token, searchInput);
     } else if (filterCriteria) {
+      console.log("filter criterior is", filterCriteria)
       fetchedNotes = await getNotesByCat(token, filterCriteria);
     } else if (sortDesc) {
-      fetchedNotes = await getNotesDesc(token, userId);
+      fetchedNotes = await getNotesDesc(token);
     } else {
-      fetchedNotes = await getNotesAsce(token, userId);
+      fetchedNotes = await getNotesAsce(token);
     }
     setNotes(fetchedNotes);
   };
@@ -259,6 +260,7 @@ const Dashboard = () => {
     } else {
       // Otherwise, update the filter criteria and fetch notes based on the new criteria
       setFilterCriteria(criteria);
+      console.log('filter by cat', criteria);
       const fetchedNotes = await getNotesByCat(token, criteria);
       setNotes(fetchedNotes);
     }
@@ -361,7 +363,7 @@ const Dashboard = () => {
                     type='text'
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    placeholder='New category'
+                    placeholder='New category...'
                   />
                 </Form.Group>
                 <Button
@@ -440,7 +442,7 @@ const Dashboard = () => {
                   type='text'
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
-                  placeholder='New category'
+                  placeholder='New category...'
                 />
               </Form.Group>
               <Button onClick={handleAddCategory} className={`fab-button newCategoryButton ${buttonClass} ${styles.newCategoryButton}`}>
@@ -461,7 +463,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-   
+  
         <div className={`${styles.mainContainer} mainContent`}>
           {/* Action buttons */}
 
@@ -475,7 +477,7 @@ const Dashboard = () => {
             />
             <Dropdown onSelect={handleFilter} className={`${styles.filter} mx-1`}>
               
-              <Dropdown.Toggle variant='outline-secondary'>
+              <Dropdown.Toggle variant='outline-secondary' >
                 <span>Filter</span>
                 <BsFilter />
               </Dropdown.Toggle>

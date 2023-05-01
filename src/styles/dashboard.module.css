@@ -28,6 +28,7 @@
 .filter button{
   background-color: var(--dashboard-filter-background);
   color:var(--dashboard-filter-text);
+  /* color: white; */
   border:none;
   border-radius: 20px;
   display: flex;
@@ -47,6 +48,7 @@
 .sort{
   background-color: var(--dashboard-filter-background);
   color:var(--dashboard-filter-text);
+  /* color: white; */
   border:none;
   border-radius: 20px;
   display: flex;
@@ -123,6 +125,7 @@
   justify-content: center;
   align-items: center;
   color:var(--dashboard-filter-text);
+  /* color: white; */
   background-color: var(--dashboard-filter-background);
   border:none;
 }
@@ -235,6 +238,11 @@
   font-size: 1.75em;
   text-decoration: none;
 }
+
+.icons {
+  color: white;
+}
+
 .newCategoryContainer{
   display:flex;
   flex-direction: row; 
@@ -242,7 +250,10 @@
   position: sticky;
   bottom: 0px;
   height: 108px;
+  font-weight: 300;
+  color: rgba(114, 114, 114, 0.6);
 }
+
 .newCategoryContainerFixed{
   display:flex;
   flex-direction: row; 
@@ -251,6 +262,7 @@
   bottom: 50px;
   background-color: var(--dashboard-background);
 }
+
 .newCategoryForm{
   flex-grow: 1;
 }
@@ -258,6 +270,9 @@
   height:2.25rem;
   border:none;
   border-radius:30px;
+  font-weight: 300;
+  font-size: .9em;
+  margin: .5em;
 }
 
 .newCategoryButton{
@@ -272,6 +287,7 @@
   background-color: var(--dashboard-header-background);
   border:none;
   padding:0;
+  margin: .5em;
 }
 
 .newCategoryButton:hover svg{

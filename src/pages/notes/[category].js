@@ -41,6 +41,9 @@ import {
   getAllCats,
   addCat,
   getNotesByCat,
+  getSearchResByCat,
+  getNotesDescByCat,
+  getNotesAsceByCat
 } from '@/modules/Data.js';
 import {
   addNote,
@@ -125,12 +128,13 @@ const CategoryPage = () => {
     // Redirect the user to the editor page for the newly created note
     router.push(`/note/${createdNote._id}`);
   };
+
   const handleAddCategory = async () => {
     if (newCategory && newCategory.trim()) {
       const token = await getToken({ template: 'codehooks' });
       const newCat = {
         userId: userId,
-        name: newCategory.trim(),
+        name: newCategory,
       };
       const createdCategory = await addCat(token, newCat); // Get the created category from the API response
       setCategories([...categories, createdCategory]); // Add the created category to the state
@@ -138,6 +142,7 @@ const CategoryPage = () => {
       console.log('Added new category:', createdCategory);
     }
   };
+
   const generatePdf = async (title, content) => {
     generatePdfHTML(title, content);
   };
@@ -156,13 +161,13 @@ const CategoryPage = () => {
     let fetchedNotes = [];
     const token = await getToken({ template: 'codehooks' });
     if (searchInput) {
-      fetchedNotes = await getSearchRes(token, searchInput);
+      fetchedNotes = await getSearchResByCat(token, searchInput, category);
     } else if (filterCriteria) {
       fetchedNotes = await getNotesByCat(token, filterCriteria);
     } else if (sortDesc) {
-      fetchedNotes = await getNotesDesc(token, userId);
+      fetchedNotes = await getNotesDescByCat(token, category);
     } else {
-      fetchedNotes = await getNotesAsce(token, userId);
+      fetchedNotes = await getNotesAsceByCat(token, category);
     }
     setNotes(fetchedNotes);
   };
@@ -177,6 +182,44 @@ const CategoryPage = () => {
   const handleSort = async () => {
     setSortDesc(!sortDesc);
     await searchNotes();
+  };
+
+  const handleCopy = async (title, content, category) => {
+    const newTitle = title + " copy"
+    // copy the note's category
+    const copiedNote = {
+      title: newTitle,
+      content: content,
+      category: category,
+      userId: userId
+    };
+
+    const token = await getToken({ template: 'codehooks' });
+    await addNote(token, copiedNote);
+
+    // Refresh the notes list based on the selected category
+    const fetchedNotes = await getNotesByCat(token, category);
+    setNotes(fetchedNotes);
+  };
+
+  // Handle moving the note to a different category
+  const handleMoveNoteToCategory = async () => {
+    // Get the selected category from the select input element
+    const newCategory = categorySelectRef.current.value;
+    // Update the note's category
+    const modifiedNote = {
+      title: noteToMove.title,
+      content: noteToMove.content,
+      category: newCategory,
+      userId: userId,
+    };
+    const token = await getToken({ template: 'codehooks' });
+    await updateNote(token, noteToMove._id, modifiedNote);
+    // Refresh the notes list based on the selected category
+    const fetchedNotes = await getNotesByCat(token, category);
+    setNotes(fetchedNotes);
+    // Close the move category modal
+    setShowMoveCategoryModal(false);
   };
 
   return (
@@ -266,7 +309,7 @@ const CategoryPage = () => {
                     type='text'
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    placeholder='New category'
+                    placeholder='New category...'
                   />
                 </Form.Group>
                 <Button
@@ -437,7 +480,7 @@ const CategoryPage = () => {
                         >
                           Export
                         </Dropdown.Item>
-                        <Dropdown.Item href='#/action-3'>Copy</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleCopy(note.title, note.content, note.category)} href='#'>Copy</Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => handleDeleteNote(note._id)}
                         >
@@ -488,6 +531,10 @@ const CategoryPage = () => {
               onClick={() => setShowMoveCategoryModal(false)}
             >
               Close
+            </Button>
+
+            <Button variant='primary' onClick={handleMoveNoteToCategory}>
+              Move
             </Button>
           </Modal.Footer>
         </Modal>
