@@ -25,7 +25,7 @@ Note Capsule aims to solve the issue of taking, organizing, and accessing notes 
 **Describe the most challenging features you implemented
 (one sentence per bullet, maximum 4 bullets):**
 
-- User Authentication(Auth0): Secure sign up and login functionality using Clerk.js with options for email, Google, or other social media logins.
+- User Authentication(Clerk): Secure sign up and login functionality using Clerk.js with options for email, Google, or other social media logins.
 - Notes Dashboard: Display a list of all notes with options to
   2.1 filter, 2.2 sort, 2.3 search, and organize them using 2.4 Folder. 2.5 Dark mode allows users to customize the interface to their liking.
 - Note Editor: Rich text editor based on Quill.js that allows users to create, edit, and format notes with options for adding images, links, taking photos using the device's camera, and export notes as PDFs.
