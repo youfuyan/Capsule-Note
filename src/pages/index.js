@@ -60,23 +60,11 @@ export default function Home() {
                 className={landingstyles.image}
               ></img>
 
-              {/* <img
-                src="/imgs/landing_medium.png"
-                alt="background"
-                className={landingstyles.imageMedium}
-              ></img> */}
-
               <img
                 src="/imgs/landing_medium_large.png"
                 alt="background"
                 className={landingstyles.imageMediumLarge}
               ></img>
-
-              {/* <img
-                src="/imgs/landing_desktop.png"
-                alt="background"
-                className={landingstyles.imageDesktop}
-              ></img> */}
 
             </div>
 

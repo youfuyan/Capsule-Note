@@ -1,17 +1,34 @@
 // page/note/[id].js
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useAuth, SignInButton } from "@clerk/nextjs";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { ArrowLeft } from "react-bootstrap-icons";
-import { getNote, updateNote } from "@/modules/Data";
+import { getNote, updateNote, uploadImg } from "@/modules/Data";
 import styles from "@/styles/editor.module.css";
 import Loading from "@/components/Loading"
+import {BsCameraFill} from 'react-icons/bs';
 // Dynamic import for react-quill to prevent server-side rendering issues
-const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import("react-quill");
+
+    return ({ forwardedRef, ...props }) => <RQ ref={forwardedRef} {...props} />;
+  },
+  {
+    ssr: false,
+  }
+);
 import Webcam from "react-webcam";
+import { IKImage, IKCore, IKContext, IKUpload } from "imagekitio-react";
 
 export default function Editor() {
   // Initialize states for the note title and content
@@ -22,6 +39,8 @@ export default function Editor() {
   const [updatedContent, setUpdatedContent] = useState("");
   // State to track auto-save status
   const [isSaved, setIsSaved] = useState(false);
+  // State of showing webcam modal
+  const [showWebcamModal, setShowWebcamModal] = useState(false);
 
   // Use the useRouter hook to programmatically navigate back to the dashboard
   const router = useRouter();
@@ -30,6 +49,18 @@ export default function Editor() {
   const [jwt, setJwt] = useState("");
   const [camera, setCamera] = useState(false);
   const webcamRef = useRef(null);
+  const quillObj = useRef(false);
+
+  const uploadImgToImageKit = async (file) => {
+    const body = {
+      file: file,
+    };
+    const token = await getToken({ template: "codehooks" });
+
+    const result = await uploadImg(token, body);
+
+    return result;
+  };
 
   const videoConstraints = {
     width: 360,
@@ -37,40 +68,88 @@ export default function Editor() {
     facingMode: "environment",
   };
 
-  const capture = useCallback((content) => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setNoteContent(content + `<img src=${imageSrc} alt="screenshot" />`)
-    setCamera(false);
-  }, [webcamRef]);
+  const convertToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [
-        { list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" },
-      ],
-      ["link", "image"],
-      ["clean"],
-    ],
+  const imageHandler = async () => {
+    // const reader = new FileReader();
+
+    const input = document.createElement("input");
+
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = await convertToBase64(input.files[0]);
+      uploadImgToImageKit(file).then((result) => {
+        console.log(result);
+        const range = quillObj.current.getEditorSelection();
+
+        quillObj.current
+          .getEditor()
+          .insertEmbed(range.index, "image", result.url);
+      });
+    };
   };
 
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-  ];
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, false] }],
+          ["bold", "italic", "underline", "strike", "blockquote"],
+          [
+            { list: "ordered" },
+            { list: "bullet" },
+            { indent: "-1" },
+            { indent: "+1" },
+          ],
+          ["link", "image"],
+          ["clean"],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      },
+    }),
+    []
+  );
+
+  const capture = useCallback(
+    async (content) => {
+      const imageSrc = webcamRef.current.getScreenshot();
+
+      uploadImgToImageKit(imageSrc).then((result) => {
+        const html = content + `<img src=${result.url} alt="screenshot" />`;
+        // console.log(result.url);
+        setNoteContent(html);
+        setCamera(false);
+      });
+    },
+    [webcamRef]
+  );
+
+  // const deleteImage = async (content, delta, source, editor) => {
+  //   // console.log("content: " + content);
+  //   // console.log("delta: " + delta);
+  //   // console.log("source: " + source);
+  //   // const isDeleting = JSON.stringify(delta.ops[1].delete);
+  //   // console.log("delta: " + JSON.stringify(delta.ops));
+  //   // console.log("-------------------------------------");
+  //   // console.log("editor: " + JSON.stringify(editor.getContents()));
+  //   // if(isDeleting === "1"){
+  //   //   console.log("hey")
+  //   //   // const isImage = JSON.stringify(editor.getContents)
+  //   //   console.log("editor: " + JSON.stringify(editor.getContents()));
+  //   // }
+  //   // console.log("editor: " + JSON.stringify(editor.getContents().delete()));
+  // };
 
   // Redirect to home page if user is not signed in
   useEffect(() => {
@@ -86,7 +165,6 @@ export default function Editor() {
         const token = await getToken({ template: "codehooks" });
         setJwt(token);
         const fetchedNote = await getNote(token, id);
-        console.log("Fetched note:", fetchedNote);
         setNote(fetchedNote);
         setNoteTitle(fetchedNote.title);
         setNoteContent(fetchedNote.content);
@@ -95,18 +173,8 @@ export default function Editor() {
     fetchNote();
   }, [userId, jwt, id]);
 
-  // // Simulate auto-save functionality
-  // useEffect(() => {
-  //   if (noteContent) {
-  //     setIsSaved(false);
-  //     const timeoutId = setTimeout(() => {
-  //       setIsSaved(true);
-  //     }, 1000); // Simulated auto-save delay
-  //     return () => clearTimeout(timeoutId);
-  //   }
-  // }, [noteContent]);
-
   // Auto-save when noteTitle or noteContent change
+
   useEffect(() => {
     setIsSaved(false);
     const autoSaveDelay = 1000; // Auto-save delay in milliseconds
@@ -148,6 +216,38 @@ export default function Editor() {
       {/* Check if the user is signed in before rendering the content */}
       {userId ? (
         <div className={styles.pageContainer}>
+          {/* Webcam Modal */}
+          <Modal
+            dialogClassName="webcamModal"
+            size="lg"
+            show={showWebcamModal}
+            onHide={() => setShowWebcamModal(false)}
+            aria-labelledby="example-modal-sizes-title-lg"
+          >
+            <Modal.Header closeButton closeVariant="white">
+              <Modal.Title id="example-modal-sizes-title-lg">
+                
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className={styles.webcam}>
+                  {(
+                    <>
+                      <Webcam
+                        audio={false}
+                        height={400}
+                        width={400}
+                        ref={webcamRef}
+                        screenshotFormat="image/jpeg"
+                        mirrored={false}
+                        videoConstraints={videoConstraints}
+                      />
+                      <Button className={styles.webcamButton} onClick={() => capture(noteContent)}>Take Photo</Button>
+                    </>
+                  )}
+                </div>
+            </Modal.Body>
+          </Modal>
           {/* Top bar */}
           <div className={styles.topBar}>
             {/* Left button: Go back to dashboard */}
@@ -166,42 +266,32 @@ export default function Editor() {
               {isSaved ? "Saved" : "Saving..."}
             </div>
           </div>
-          <div className="Webcam">
-            {console.log(camera)}
-            {camera ? (
-              <>
-                <Webcam
-                  audio={false}
-                  height={400}
-                  width={400}
-                  ref={webcamRef}
-                  screenshotFormat="image/jpeg"
-                  mirrored={false}
-                  videoConstraints={videoConstraints}
-                />
-                <button onClick={() => capture(noteContent)}>Capture photo</button>
-              </>
-            ) : (
-              <button onClick={() => setCamera(true)}>Insert photo by camera</button>
-            )}
-          </div>
+          
+          
           <div className={styles.editorContainer}>
-            {/* Title input (editable) */}
-            <input
-              className={styles.noteTitleInput}
-              type="text"
-              value={noteTitle}
-              onChange={(e) => setNoteTitle(e.target.value)}
-              placeholder="Note Title"
-            />
-
+            <div className={styles.titleContainer}>
+              {/* Title input (editable) */}
+              <input
+                className={styles.noteTitleInput}
+                type="text"
+                value={noteTitle}
+                onChange={(e) => setNoteTitle(e.target.value)}
+                placeholder="Note Title"
+              />
+              {/* Camera button */}
+              <button className={styles.cameraButton} onClick={() => setShowWebcamModal(true)}>
+                <BsCameraFill/>
+              </button> 
+            </div>
             {/* Note Editor */}
             <ReactQuill
+              forwardedRef={quillObj}
               className={styles.noteEditor}
               value={noteContent}
-              onChange={setNoteContent}
+              onChange={(content, delta, source, editor) => {
+                setNoteContent(content);
+              }}
               modules={modules}
-              formats={formats}
               placeholder="Start writing your note..."
             />
           </div>
