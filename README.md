@@ -1,6 +1,6 @@
 # Module 2 Group Assignment
 
-CSCI 5117, Spring 2023, [assignment description](https://canvas.umn.edu/courses/355584/pages/project-2)
+CSCI 5117, Spring 2023
 
 ## App Info:
 
@@ -14,11 +14,11 @@ Note Capsule aims to solve the issue of taking, organizing, and accessing notes 
 
 ### Students
 
-- Youfu Yan, yan00111@umn.edu
-- Isabel Dahl, dahl1199@umn.edu
-- Marcellinus, Steven Sugiarto sugia005@umn.edu
-- Ying Lu, lu000097@umn.edu
-- Ola Oladeji, olade014@umn.edu
+- Youfu Yan
+- Isabel Dahl
+- Marcellinus, Steven Sugiarto
+- Ying Lu
+- Ola Oladeji
 
 ## Key Features
 
